@@ -4,9 +4,9 @@ def binary_search(data, target, key=lambda x: x):
         mid = (low + high) // 2
         mid_value = key(data[mid])
         if mid_value == target:
-            return data[mid]  # Kembalikan objek Medicine
+            return data[mid]
         elif mid_value < target:
             low = mid + 1
         else:
             high = mid - 1
-    return None  # Tidak ditemukan
+    return None

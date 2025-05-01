@@ -104,5 +104,4 @@ class DoubleLinkedList:
 
             return dummy.next
 
-        # Gunakan merge_sort_iterative untuk mengurutkan linked list
         self.head = merge_sort_iterative(self.head, key)
