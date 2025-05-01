@@ -36,50 +36,7 @@ class DoubleLinkedList:
         return result
     
     def merge_sort(self, key=lambda med: med.name.lower()):
-        def split(head):
-            if not head or not head.next:
-                return head, None
-            
-            slow = head
-            fast = head
-            while fast and fast.next:
-                fast = fast.next.next
-                slow = slow.next
-            middle = slow.next
-            slow.next = None
-            return head, middle
-        
-        def merge(left, right):
-            dummy = Node(None)
-            current = dummy
-            while left and right:
-                if key(left.data) <= key(right.data):
-                    current.next = left
-                    left.prev = current
-                    left = left.next
-                else:
-                    current.next = right
-                    right.prev = current
-                    right = right.next
-                current = current.next
-            
-            if left:
-                current.next = left
-                left.prev = current
-            elif right:
-                current.next = right
-                right.prev = current
-            return dummy.next
-        
-        def merge_sort_rec(head):
-            if not head or not head.next:
-                return head
-            left, right = split(head)
-            left = merge_sort_rec(left)
-            right = merge_sort_rec(right)
-            return merge(left, right)
-
-        def merge_sort_iterative(head):
+        def merge_sort_iterative(head, key):
             if not head or not head.next:
                 return head
 
@@ -147,4 +104,5 @@ class DoubleLinkedList:
 
             return dummy.next
 
-        self.head = merge_sort_iterative(self.head)
+        # Gunakan merge_sort_iterative untuk mengurutkan linked list
+        self.head = merge_sort_iterative(self.head, key)

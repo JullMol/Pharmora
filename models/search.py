@@ -1,17 +1,12 @@
-def binary_search(data_list, target, key=lambda x: x.name.lower()):
-    left = 0
-    right = len(data_list) - 1
-    target = target.lower()
-
-    while left <= right:
-        mid = (left + right) // 2
-        mid_value = key(data_list[mid])
-
+def binary_search(data, target, key=lambda x: x):
+    low, high = 0, len(data) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        mid_value = key(data[mid])
         if mid_value == target:
-            return data_list[mid]
+            return data[mid]  # Kembalikan objek Medicine
         elif mid_value < target:
-            left = mid + 1
+            low = mid + 1
         else:
-            right = mid - 1
-    
-    return None
+            high = mid - 1
+    return None  # Tidak ditemukan
