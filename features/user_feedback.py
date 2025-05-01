@@ -35,7 +35,7 @@ class FeedbackDoubleLinkedList:
         return feedbacks
 
 # ======================================
-#        Algoritma: Binary Search
+#        Algorithm: Binary Search
 # ======================================
 
 def binary_search(sorted_list, target):
@@ -54,7 +54,7 @@ def binary_search(sorted_list, target):
     return -1
 
 # ======================================
-#          Fungsi Utama: Submit Feedback
+#          Main Function: Submit Feedback
 # ======================================
 
 import pandas as pd
@@ -65,28 +65,28 @@ def submit_feedback():
     try:
         medicine_df = pd.read_csv('data/Medicine_Details.csv')
     except FileNotFoundError:
-        print("Dataset tidak ditemukan.")
+        print("Dataset not found.")
         return
     
     if 'Medicine Name' not in medicine_df.columns:
-        print("Kolom 'Medicine Names' tidak ditemukan di dataset.")
+        print("Column 'Medicine Name' not found in the dataset.")
         return
 
     medicine_names = sorted(medicine_df['Medicine Name'].tolist())
     feedback_list = FeedbackDoubleLinkedList()
 
     while True:
-        medicine_name = input("\nMasukkan nama obat (atau ketik 'exit' untuk keluar): ").strip()
+        medicine_name = input("\nEnter the medicine name (or type 'exit' to quit): ").strip()
         if medicine_name.lower() == 'exit':
             break
 
         index = binary_search(medicine_names, medicine_name)
         if index == -1:
-            print("Obat tidak ditemukan. Silakan coba lagi.")
+            print("Medicine not found. Please try again.")
             continue
 
-        print("\nPilih rating:\n1. Excellent\n2. Average\n3. Poor")
-        rating_choice = input("Masukkan pilihan rating (1/2/3): ").strip()
+        print("\nChoose a rating:\n1. Excellent\n2. Average\n3. Poor")
+        rating_choice = input("Enter your rating choice (1/2/3): ").strip()
 
         if rating_choice == '1':
             rating_col = 'excellent review'
@@ -95,7 +95,7 @@ def submit_feedback():
         elif rating_choice == '3':
             rating_col = 'poor review'
         else:
-            print("Pilihan tidak valid. Ulangi input.")
+            print("Invalid choice. Please try again.")
             continue
 
         real_index = medicine_df[medicine_df['Medicine Name'].str.lower() == medicine_name.lower()].index[0]
@@ -106,12 +106,12 @@ def submit_feedback():
             medicine_df[rating_col] = 0
             medicine_df.at[real_index, rating_col] += 1
 
-        comment = input("Tulis ulasan Anda: ").strip()
+        comment = input("Write your review: ").strip()
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         feedback_list.add_feedback(medicine_name, rating_col, comment, timestamp)
 
-        print("✅ Feedback berhasil ditambahkan!")
+        print("✅ Feedback successfully added!")
 
     medicine_df.to_csv('data/Medicine_Details.csv', index=False)
 
@@ -127,4 +127,4 @@ def submit_feedback():
             new_feedbacks = pd.DataFrame(feedbacks)
             new_feedbacks.to_csv('data/user_feedbacks.csv', index=False)
 
-    print("\n🚀 Semua feedback berhasil disimpan. Terima kasih!")
+    print("\n🚀 All feedback successfully saved. Thank you!")

@@ -3,12 +3,12 @@ import os
 from datetime import datetime
 
 FAVORITES_FILE = 'data/user_favorites.csv'
-MEDICINE_FILE = 'data/Medicine_Details.csv'  
+MEDICINE_FILE = 'data/Medicine_Details.csv'
 
 def add_to_favorites(medicine_name: str):
     medicine_name = medicine_name.strip().lower()
     if not medicine_name:
-        print("Nama obat tidak boleh kosong.")
+        print("Medicine name cannot be empty.")
         return
 
     found = False
@@ -20,11 +20,11 @@ def add_to_favorites(medicine_name: str):
                     found = True
                     break
     except FileNotFoundError:
-        print("File dataset obat tidak ditemukan.")
+        print("Medicine dataset file not found.")
         return
 
     if not found:
-        print("Obat tidak ditemukan dalam daftar.")
+        print("Medicine not found in the list.")
         return
 
     favorites = set()
@@ -37,7 +37,7 @@ def add_to_favorites(medicine_name: str):
                     favorites.add(row[0].strip().lower())
 
     if medicine_name in favorites:
-        print(f"'{medicine_name}' sudah ada dalam daftar favorit.")
+        print(f"'{medicine_name}' is already in the favorites list.")
         return
 
     with open(FAVORITES_FILE, mode='a', newline='', encoding='utf-8') as file:
@@ -45,12 +45,12 @@ def add_to_favorites(medicine_name: str):
         if os.path.getsize(FAVORITES_FILE) == 0:
             writer.writerow(["medicine_name", "timestamp"])
         writer.writerow([medicine_name, datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
-        print(f"Obat '{medicine_name}' berhasil ditambahkan ke favorit.")
+        print(f"Medicine '{medicine_name}' has been successfully added to favorites.")
 
 
 def view_favorites():
     if not os.path.exists(FAVORITES_FILE):
-        print("Belum ada obat favorit yang disimpan.")
+        print("No favorite medicines have been saved yet.")
         return
 
     with open(FAVORITES_FILE, mode='r', newline='', encoding='utf-8') as file:
@@ -59,17 +59,17 @@ def view_favorites():
         favorites = list(reader)
 
         if not favorites:
-            print("Belum ada obat favorit yang disimpan.")
+            print("No favorite medicines have been saved yet.")
             return
 
-        print("\nDaftar Obat Favorit:")
+        print("\nFavorite Medicines List:")
         for idx, (medicine, timestamp) in enumerate(favorites, 1):
-            print(f"{idx}. {medicine} (ditambahkan pada {timestamp})")
+            print(f"{idx}. {medicine} (added on {timestamp})")
 
 
 def remove_from_favorites(medicine_name):
     if not os.path.exists(FAVORITES_FILE):
-        print("Tidak ada file favorit untuk dihapus.")
+        print("No favorites file found to remove from.")
         return
 
     updated_rows = []
@@ -85,7 +85,7 @@ def remove_from_favorites(medicine_name):
                 found = True
 
     if not found:
-        print(f"Obat '{medicine_name}' tidak ditemukan dalam daftar favorit.")
+        print(f"Medicine '{medicine_name}' not found in the favorites list.")
         return
 
     with open(FAVORITES_FILE, mode='w', newline='', encoding='utf-8') as file:
@@ -93,4 +93,4 @@ def remove_from_favorites(medicine_name):
         writer.writerow(["medicine_name", "timestamp"])
         writer.writerows(updated_rows)
 
-    print(f"Obat '{medicine_name}' berhasil dihapus dari favorit.")
+    print(f"Medicine '{medicine_name}' has been successfully removed from favorites.")

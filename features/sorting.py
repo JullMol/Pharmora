@@ -43,7 +43,7 @@ def sort_medicines_by_column(column_name, reverse=False):
             data = list(reader)
 
             if column_name not in reader.fieldnames:
-                print(f"Kolom '{column_name}' tidak ditemukan dalam file.")
+                print(f"Column '{column_name}' not found in the file.")
                 return
 
             def key_func(item):
@@ -55,10 +55,10 @@ def sort_medicines_by_column(column_name, reverse=False):
 
             sorted_data = merge_sort(data, key_func, reverse)
 
-            print(f"\nHasil Sorting Berdasarkan: {column_name}")
+            print(f"\nSorting Results Based on: {column_name}")
             for idx, item in enumerate(sorted_data[:10], 1): 
                 print(f"{idx}. {item['Medicine Name']} - {item[column_name]}")
     except FileNotFoundError:
-        print("File data obat tidak ditemukan.")
+        print("Medicine data file not found.")
     except Exception as e:
-        print(f"Terjadi kesalahan saat sorting: {e}")
+        print(f"An error occurred during sorting: {e}")
