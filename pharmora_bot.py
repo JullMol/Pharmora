@@ -20,7 +20,6 @@ def chatbot(nodes):
         query = user_input.lower()
         matches = []
 
-        # Search for medicines based on name, uses, or side effects
         for drug in nodes:
             if (drug.uses and query in drug.uses.lower()) or \
                (drug.name and query in drug.name.lower()) or \
@@ -32,12 +31,10 @@ def chatbot(nodes):
             continue
 
         reverse = True
-        # Use DoubleLinkedList for sorting
         matches_list = DoubleLinkedList()
         for match in matches:
             matches_list.append(match)
 
-        # Sort matches using merge_sort
         matches_list.merge_sort(key=lambda d: d.excellent_review)
         sorted_matches = matches_list.to_list()
         if reverse:
@@ -51,7 +48,7 @@ def chatbot(nodes):
             print(f"• Excellent Reviews: {drug.excellent_review}% of users")
         else:
             print(f"\nPharmora: I found {len(sorted_matches)} medicines that might help:")
-            for i, drug in enumerate(sorted_matches[:5], 1):  # Show top 5 results
+            for i, drug in enumerate(sorted_matches[:5], 1):
                 print(f"\n{i}. {drug.name}")
                 print(f"   Uses: {drug.uses.split('.')[0] if drug.uses else 'Not specified'}")
                 print(f"   Rating: {drug.excellent_review}% positive reviews")
