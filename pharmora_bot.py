@@ -4,6 +4,7 @@ def chatbot(nodes):
     print("\n=== Pharmora Chatbot 🤖 ===")
     print("Hi! I can help you find information about medicines.")
     print("Examples:")
+    print("- Type your disease like: ALzheimer, Migrain, etc.")
     print("- What is Paracetamol?")
     print("- Side effects of Amoxicillin")
     print("- Uses of Ibuprofen")
