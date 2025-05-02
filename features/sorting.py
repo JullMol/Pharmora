@@ -1,40 +1,7 @@
 import csv
+from models.linked_list import DoubleLinkedList
 
 MEDICINE_FILE = 'data/Medicine_Details.csv'
-
-def merge_sort(data, key_func, reverse=False):
-    if len(data) <= 1:
-        return data
-
-    mid = len(data) // 2
-    left = merge_sort(data[:mid], key_func, reverse)
-    right = merge_sort(data[mid:], key_func, reverse)
-
-    return merge(left, right, key_func, reverse)
-
-def merge(left, right, key_func, reverse):
-    result = []
-    i = j = 0
-
-    while i < len(left) and j < len(right):
-        if reverse:
-            if key_func(left[i]) > key_func(right[j]):
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                j += 1
-        else:
-            if key_func(left[i]) < key_func(right[j]):
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                j += 1
-
-    result.extend(left[i:])
-    result.extend(right[j:])
-    return result
 
 def sort_medicines_by_column(column_name, reverse=False):
     try:
@@ -46,6 +13,10 @@ def sort_medicines_by_column(column_name, reverse=False):
                 print(f"Column '{column_name}' not found in the file.")
                 return
 
+            medicine_list = DoubleLinkedList()
+            for row in data:
+                medicine_list.append(row)
+
             def key_func(item):
                 value = item[column_name]
                 try:
@@ -53,7 +24,12 @@ def sort_medicines_by_column(column_name, reverse=False):
                 except ValueError:
                     return value.lower()
 
-            sorted_data = merge_sort(data, key_func, reverse)
+            medicine_list.merge_sort(key=key_func)
+
+            sorted_data = medicine_list.to_list()
+
+            if reverse:
+                sorted_data = sorted_data[::-1]
 
             print(f"\nSorting Results Based on: {column_name}")
             for idx, item in enumerate(sorted_data[:10], 1): 
