@@ -1,9 +1,27 @@
+import csv
 from models.linked_list import DoubleLinkedList
+
+HISTORY_FILE = 'data/bot_history.csv'
+
+def save_to_csv(query):
+    with open(HISTORY_FILE, mode='a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow([query])
+
+def load_from_csv():
+    try:
+        with open(HISTORY_FILE, mode='r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            return [row[0] for row in reader]
+    except FileNotFoundError:
+        return []
 
 def chatbot(nodes):
     print("\nPharmora: Hi! I can help you find information about medicines.")
     print("Type 'exit' to quit or 'history' to see your search history.\n")
-    
+
+    search_history = load_from_csv()
+
     while True:
         user_input = input("You: ").strip()
         if not user_input:
@@ -14,10 +32,17 @@ def chatbot(nodes):
             break
             
         if user_input.lower() in ["history", "riwayat"]:
-            print("Pharmora: Search history feature would be implemented here")
+            if not search_history:
+                print("\nPharmora: Your search history is empty.")
+            else:
+                print("\nPharmora: Here is your search history:")
+                for i, query in enumerate(search_history, 1):
+                    print(f"{i}. {query}")
             continue
 
         query = user_input.lower()
+        search_history.append(query)
+        save_to_csv(query)
         matches = []
 
         for drug in nodes:

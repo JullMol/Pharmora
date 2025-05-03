@@ -1,92 +1,52 @@
-import csv
-from loader import load_medicines
-from models.search import binary_search
-from features.favorites import add_to_favorites, view_favorites, remove_from_favorites
-from features.user_feedback import submit_feedback
-from features.sorting import sort_medicines_by_column
-from features.history import save_search_to_history, show_search_history
-from features.recommendation import drug_search_main
-from pharmora_bot import chatbot
-
-def show_menu():
-    print("\n=== PHARMORA MENU ===")
-    print("1. Display All Medicines")
-    print("2. Search Medicine")
-    print("3. Sort Medicines by Column")
-    print("4. Add Medicine to Favorites")
-    print("5. View Favorites List")
-    print("6. Remove Medicine from Favorites")
-    print("7. Medicine Recommendations")
-    print("8. View Search History")
-    print("9. Submit Feedback")
-    print("10. Pharmora Chatbot")
-    print("0. Exit")
+from auth import register_user, login_user
+from user.dashboard import user_dashboard, user
+from admin.dashboard import admin_dashboard
 
 def main():
-    medicine_list = load_medicines('data/Medicine_Details.csv')
-
     while True:
-        show_menu()
+        print("\n=== PHARMORA MAIN MENU ===")
+        print("1. Admin Login")
+        print("2. User Login")
+        print("3. Register New User")
+        print("0. Exit")
+
         pilihan = input("Choose an option: ")
 
         if pilihan == "1":
-            print("\n--- List of All Medicines ---")
-            medicine_list.merge_sort(key=lambda med: med.name.lower())
-            medicine_list.display()
+            username = input("Username: ")
+            password = input("Password: ")
+            user_id, role = login_user(username, password)
+
+            if user_id is None:
+                print("Invalid login credentials.")
+            elif role == "admin":
+                print(f"Welcome, {username}!")
+                admin_dashboard()
+            else:
+                print("Access denied. Admins only.")
 
         elif pilihan == "2":
-            query = input("\nEnter the name of the medicine to search for: ").strip().lower()
-            medicine_list.merge_sort(key=lambda med: med.name.lower())
-            sorted_list = medicine_list.to_list()
-            result = binary_search(sorted_list, query, key=lambda m: m.name.lower())
+            username = input("Username: ")
+            password = input("Password: ")
+            user_id, role = login_user(username, password)
 
-            if query:
-                save_search_to_history(query)
-
-            if result:
-                print("\nMedicine found:")
-                print(f"- {result.name} ({result.manufacturer})")
+            if user_id is None:
+                print("Invalid login credentials.")
+            elif role == "user":
+                print(f"Welcome, {username}!")
+                user_dashboard()
+                user()
             else:
-                print("\nMedicine not found.")
+                print("Access denied. Users only.")
 
         elif pilihan == "3":
-            print("\nExamples of columns that can be used for sorting:")
-            print("- Medicine Name")
-            print("- Manufacturer")
-            print("- Excellent Review %")
-            print("- Poor Review %")
-            print("- Average Review %")
-            kolom = input("Enter the column name to use for sorting: ")
-            urutan = input("Sort from largest to smallest? (y/n): ").lower() == 'y'
-            sort_medicines_by_column(kolom, reverse=urutan)
-
-        elif pilihan == "4":
-            nama_obat = input("Enter the name of the medicine to add to favorites: ")
-            add_to_favorites(nama_obat)
-
-        elif pilihan == "5":
-            view_favorites()
-
-        elif pilihan == "6":
-            nama_obat = input("Enter the name of the medicine to remove from favorites: ")
-            remove_from_favorites(nama_obat)
-
-        elif pilihan == "7":
-            print("\n--- Medicine Recommendations ---")
-            drug_search_main()
-
-        elif pilihan == "8":
-            print("\n--- Search History ---")
-            show_search_history()
-
-        elif pilihan == "9":
-            print("\n--- Submit User Feedback ---")
-            submit_feedback()
-
-        elif pilihan == "10":
-            print("\n--- Pharmora Chatbot ---")
-            nodes = medicine_list.to_list()
-            chatbot(nodes)
+            username = input("Enter new username: ")
+            password = input("Enter new password: ")
+            role = input("Enter role (admin/user): ").strip().lower()
+            if role not in ["admin", "user"]:
+                print("Invalid role. Please choose 'admin' or 'user'.")
+            else:
+                register_user(username, password, role)
 
         elif pilihan == "0":
             print("Thank you for using Pharmora.")
@@ -94,7 +54,6 @@ def main():
 
         else:
             print("Invalid option. Please try again.")
-
 
 if __name__ == "__main__":
     main()
