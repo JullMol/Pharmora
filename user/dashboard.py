@@ -5,7 +5,7 @@ from features.user_feedback import submit_feedback
 from features.sorting import sort_medicines_by_column
 from features.history import save_search_to_history, show_search_history
 from features.recommendation import drug_search_main
-from pharmora_bot import chatbot
+from features.pharmora_bot import chatbot
 
 def user_dashboard():
     print("\n=== PHARMORA MENU ===")

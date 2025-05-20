@@ -94,3 +94,12 @@ def remove_from_favorites(medicine_name):
         writer.writerows(updated_rows)
 
     print(f"Medicine '{medicine_name}' has been successfully removed from favorites.")
+
+def get_favorites():
+    if not os.path.exists(FAVORITES_FILE):
+        return []
+
+    with open(FAVORITES_FILE, mode='r', newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        next(reader, None)  # Skip header
+        return [(row[0], row[1]) for row in reader if row]

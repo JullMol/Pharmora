@@ -28,7 +28,7 @@ def main():
         elif pilihan == "2":
             username = input("Username: ")
             password = input("Password: ")
-            user_id, role = login_user(username, password)
+            user_id, role = login_user(username, password, expected_role="user")
 
             if user_id is None:
                 print("Invalid login credentials.")
