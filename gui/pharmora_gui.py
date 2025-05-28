@@ -4,26 +4,44 @@ import tkinter as tk
 from CTkMessagebox import CTkMessagebox
 from tkinter import messagebox, ttk
 from PIL import Image
+from tkinter.ttk import Combobox
 import time
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from auth import login_user, register_user, is_username_exist
 from admin.admin_features import add_medicine, view_medicine_data, delete_medicine
+from models.linked_list import DoubleLinkedList
+from models.medicine import Medicine
+from models.search import binary_search_suggestions
 from features.pharmora_bot import save_to_csv, load_from_csv, response_bot
 from loader import load_medicines
 
-class LoadingScreen(ctk.CTk):
+class AppManager(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Pharmora Loading...")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
+        self.title("Pharmora")
+        self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
+        self.resizable(False, False)
+        self.active_frame = None
+
+        self.show_frame(LoadingScreen)
+
+    def show_frame(self, frame_class):
+        if self.active_frame is not None:
+            self.active_frame.pack_forget()  
+            self.active_frame.destroy()      
+        self.active_frame = frame_class(self)
+        self.active_frame.pack(fill="both", expand=True)
+
+class LoadingScreen(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configure(fg_color="transparent")
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/loading.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
@@ -31,61 +49,40 @@ class LoadingScreen(ctk.CTk):
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        self.loading_label = ctk.CTkLabel(
-            self, 
-            text="Loading Pharmora...", 
-            font=ctk.CTkFont(size=24, weight="bold"), 
-            fg_color="transparent", 
-            bg_color="transparent"
-        )
+        self.loading_label = ctk.CTkLabel(self, text="Loading Pharmora...", font=ctk.CTkFont(size=24, weight="bold"))
         self.loading_label.place(relx=0.5, rely=0.85, anchor="center")
 
-        progress_width = int(screen_width * 0.5)  
-        self.progress = ctk.CTkProgressBar(
-            self, 
-            width=progress_width, 
-            progress_color="#FF6B9D", 
-            fg_color="#1976D2"
-        )
-
+        progress_width = int(screen_width * 0.5)
+        self.progress = ctk.CTkProgressBar(self, width=progress_width)
         self.progress.place(relx=0.5, rely=0.9, anchor="center")
         self.progress.set(0)
 
-        self.after(100, self.load_animation) 
+        self.after(100, self.load_animation)
 
     def load_animation(self):
         for i in range(101):
             self.progress.set(i / 100)
             self.loading_label.configure(text=f"Loading Pharmora... {i}%")
             self.update_idletasks()
-            time.sleep(0.03)  
-        self.destroy()  
-        self.open_get_started()
+            time.sleep(0.02)
+        self.parent.show_frame(GetStartedScreen) 
 
-    def open_get_started(self):
-        get_started_screen = GetStartedScreen()
-        get_started_screen.mainloop()
-
-class GetStartedScreen(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Get Started")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
+class GetStartedScreen(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configure(fg_color="transparent")
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/1st page.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        baloo_font = (r"C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/fonts/BalooBhai2-VariableFont_wght.ttf", 30, "bold")
 
-        baloo_font = (r"C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/fonts/BalooBhai2-VariableFont_wght.ttf")
-        baloo_font = CTkFont(family="BalooBhai2", size=24, weight="bold")
         self.get_started_button = ctk.CTkButton(
             self, 
             text="Get Started", 
@@ -99,24 +96,19 @@ class GetStartedScreen(ctk.CTk):
             bg_color="#FF6B9D", 
             command=self.open_which_one
         )
-        self.get_started_button.place(relx=0.5, rely=0.68, anchor="center")
+        self.get_started_button.place(relx=0.5, rely=0.68, anchor="center")  
 
     def open_which_one(self):
-            self.destroy()
-            which_one_screen = WhichOneScreen()
-            which_one_screen.mainloop()
+        self.parent.show_frame(WhichOneScreen)
 
-class WhichOneScreen(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Choose Role")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
+class WhichOneScreen(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configure(fg_color="transparent")
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/which one.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
@@ -126,63 +118,54 @@ class WhichOneScreen(ctk.CTk):
 
         self.admin_frame = ctk.CTkFrame(self, fg_color="#FF6B9D")
         self.admin_frame.place(relx=0.32, rely=0.8, anchor="center")
-        
-        # baloo_font = (r"C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/fonts/BalooBhai2-VariableFont_wght.ttf")
-        baloo_font = CTkFont(family="BalooBhai2", size=24, weight="bold")
+
+        baloo_font = ("Baloo Bhai 2", 30, "bold")
         self.admin_button = ctk.CTkButton(
-            self.admin_frame, 
-            text="Admin", 
-            font=baloo_font, 
-            width=185, 
-            height=55, 
+            self.admin_frame,
+            text="Admin",
+            font=baloo_font,
+            width=185,
+            height=55,
             corner_radius=0,
-            fg_color="#FF6B9D", 
-            text_color="#FFFFFF",  
-            hover_color="#FF6B9D",  
-            border_width=0, 
+            fg_color="#FF6B9D",
+            text_color="#FFFFFF",
+            hover_color="#FF6B9D",
+            border_width=0,
             command=self.open_admin_login
         )
         self.admin_button.pack()
 
         self.user_frame = ctk.CTkFrame(self, fg_color="#FF6B9D")
         self.user_frame.place(relx=0.68, rely=0.8, anchor="center")
-        
+
         self.user_button = ctk.CTkButton(
-            self.user_frame, 
-            text="User", 
-            font=baloo_font, 
-            width=185, 
-            height=55, 
+            self.user_frame,
+            text="User",
+            font=baloo_font,
+            width=185,
+            height=55,
             corner_radius=0,
-            fg_color="#FF6B9D",  
-            text_color="#FFFFFF",  
-            hover_color="#FF6B9D",  
-            border_width=0, 
+            fg_color="#FF6B9D",
+            text_color="#FFFFFF",
+            hover_color="#FF6B9D",
+            border_width=0,
             command=self.open_user_login
         )
         self.user_button.pack()
 
     def open_admin_login(self):
-        self.destroy()
-        login_screen = AdminLoginScreen()
-        login_screen.mainloop()  
+        self.parent.show_frame(AdminLoginScreen)
 
     def open_user_login(self):
-        self.destroy()
-        login_screen = UserLoginScreen()
-        login_screen.mainloop()
+        self.parent.show_frame(UserLoginScreen)
 
-class AdminLoginScreen(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Login")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
-
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
+class AdminLoginScreen(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configure(fg_color="transparent")
+        # screen_width = self.winfo_screenwidth()
+        # screen_height = self.winfo_screenheight()
 
         self.show_login_screen()
 
@@ -221,17 +204,18 @@ class AdminLoginScreen(ctk.CTk):
         self.password_entry.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signin_button.place(relx=0.21, rely=0.805, anchor="w")
-        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0,border_width=0, command=self.login)
+        frame_signin_button.place(relx=0.19, rely=0.8, anchor="w")
+        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
         self.signin_button.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signup_button.place(relx=0.71, rely=0.605, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, command=self.show_signup_screen)
+        frame_signup_button.place(relx=0.69, rely=0.605, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
         self.signup_button.pack()
 
     def show_signup_screen(self):
-        self.clear_screen()
+        for widget in self.winfo_children():
+            widget.destroy()
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/welcome back.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(self.winfo_screenwidth(), self.winfo_screenheight()))
@@ -267,12 +251,12 @@ class AdminLoginScreen(ctk.CTk):
         self.password_entry.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signup_button.place(relx=0.71, rely=0.755, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0,border_width=0, command=self.register)
+        frame_signup_button.place(relx=0.69, rely=0.75, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
         self.signup_button.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signin_button.place(relx=0.21, rely=0.625, anchor="w")
+        frame_signin_button.place(relx=0.19, rely=0.625, anchor="w")
         self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
         self.back_button.pack()
 
@@ -283,9 +267,7 @@ class AdminLoginScreen(ctk.CTk):
 
         if user_id and role == "admin":
             CTkMessagebox(title="Login Successful", message=f"Welcome, {username}!", icon="check")
-            self.destroy()
-            dashboard = DisplayMedicinePage()      
-            dashboard.mainloop()
+            self.parent.show_frame(DisplayMedicinePage)
         else:
             CTkMessagebox(title="Login Failed", message="Invalid username or password", icon="cancel")
 
@@ -300,18 +282,19 @@ class AdminLoginScreen(ctk.CTk):
         register_user(username, password, "admin")
         CTkMessagebox(title="Account Created", message="Account successfully created!", icon="check")
 
-    def clear_screen(self):
-        for widget in self.winfo_children():
-            widget.destroy()
+class SimpleMedicine:
+    def __init__(self, name, composition, uses, side_effect):
+        self.name = name
+        self.composition = composition
+        self.uses = uses
+        self.side_effect = side_effect
 
-class DisplayMedicinePage(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Display Medicine")
+class DisplayMedicinePage(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/admin.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
@@ -319,10 +302,37 @@ class DisplayMedicinePage(ctk.CTk):
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        self.title_label = ctk.CTkLabel(self, text="Display Medicine", font=ctk.CTkFont(size=32, weight="bold"), text_color="#FFFFFF", fg_color="#FF6B9D")
+        self.title_label = ctk.CTkLabel(
+            self,
+            text="Display Medicine",
+            font=ctk.CTkFont(family="Roboto Flex", size=32, weight="bold"),
+            text_color="#FFFFFF",
+            fg_color="#FF6B9D"
+        )
         self.title_label.place(relx=0.45, rely=0.1)
 
-        self.table_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", width=1500, height=1000, corner_radius=15)
+        self.sort_option = ctk.CTkComboBox(
+            self,
+            values=[
+                "Name (A-Z)", "Name (Z-A)",
+                "Composition (A-Z)", "Composition (Z-A)",
+                "Uses (A-Z)", "Uses (Z-A)",
+                "Side Effect (A-Z)", "Side Effect (Z-A)"
+            ],
+            width=200,
+            height=35,
+            corner_radius=8,
+            fg_color="#FF6B9D",
+            text_color="#FFFFFF",
+            bg_color= "#FF6B9D",
+            dropdown_fg_color="#FFFFFF",
+            dropdown_text_color="#000000",
+            command=self.sort_and_reload
+        )
+        self.sort_option.place(relx=0.73, rely=0.2)
+        self.sort_option.set("Name (A-Z)")
+
+        self.table_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", width=1500, height=1000, corner_radius=15,bg_color="#FF6B9D")
         self.table_frame.place(relx=0.2, rely=0.25)
 
         style = ttk.Style()
@@ -357,9 +367,13 @@ class DisplayMedicinePage(ctk.CTk):
         self.table.column("Uses", width=320)
         self.table.column("Side Effects", width=320)
 
+        vsb = ttk.Scrollbar(self.table_frame, orient="vertical", command=self.table.yview)
+        self.table.configure(yscrollcommand=vsb.set)
+        vsb.pack(side="right", fill="y")
+
         self.table.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.refresh_button = ctk.CTkButton(self, text="Refresh Data", command=self.load_data, width=180, fg_color="#970032", text_color="#FFFFFF", font=ctk.CTkFont(size=16, weight="bold"))
+        self.refresh_button = ctk.CTkButton(self, text="Refresh Data", command=self.load_data, width=180, fg_color="#970032", text_color="#FFFFFF",bg_color="#FF6B9D", font=ctk.CTkFont(size=16, weight="bold"))
         self.refresh_button.place(relx=0.45, rely=0.85)
 
         self.load_data()
@@ -379,24 +393,7 @@ class DisplayMedicinePage(ctk.CTk):
             height=100,
             command=self.open_add_medicine_page
         )
-        self.add_button.place(x=0, y=0) 
-
-        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_display.place(relx=0.043, rely=0.15, anchor="nw")
-
-        display_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/display all.png")
-        self.display_image = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(100, 100))  
-        self.display_button = ctk.CTkButton(
-            frame_display, 
-            image=self.display_image, 
-            text="", 
-            fg_color="#FF6B9D", 
-            hover_color="#FFFFFF", 
-            width=100, 
-            height=100,
-            command=self.display_medicine
-        )
-        self.display_button.place(x=0, y=0) 
+        self.add_button.place(x=0, y=0)  
 
         frame_delete = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
         frame_delete.place(relx=0.043, rely=0.4, anchor="nw")
@@ -436,44 +433,74 @@ class DisplayMedicinePage(ctk.CTk):
         )
         self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
-    def open_add_medicine_page(self):
-        self.destroy()
-        add_medicine_screen = AddMedicinePage()
-        add_medicine_screen.mainloop()
-
     def load_data(self):
         for row in self.table.get_children():
             self.table.delete(row)
 
-        data = view_medicine_data()
-        for item in data:
-            self.table.insert("", "end", values=item)
+        data_raw = view_medicine_data()
 
-    def display_medicine(self):
-        self.destroy()
-        display_screen = DisplayMedicinePage()
-        display_screen.mainloop()
+        dll = DoubleLinkedList()
+        for row in data_raw:
+            medicine = SimpleMedicine(*row[:4])
+            dll.append(medicine)
+
+        key_mapping = {
+            "Name": lambda med: med.name.lower(),
+            "Composition": lambda med: med.composition.lower(),
+            "Uses": lambda med: med.uses.lower(),
+            "Side Effects": lambda med: med.side_effect.lower()
+        }
+        sort_key = key_mapping.get(self.sort_option.get(), lambda med: med.name.lower())
+
+        dll.merge_sort(key=sort_key)
+
+        for med in dll.to_list():
+            self.table.insert("", "end", values=(med.name, med.composition, med.uses, med.side_effect))
+
+    def sort_and_reload(self, choice=None):
+        key_map = {
+            "Name": lambda m: m.name.lower(),
+            "Composition": lambda m: m.composition.lower(),
+            "Uses": lambda m: m.uses.lower(),
+            "Side Effect": lambda m: m.side_effect.lower()
+        }
+
+        selected = self.sort_option.get()
+        field, order = selected.split(" (")
+
+        dll = DoubleLinkedList()
+        for row in view_medicine_data():
+            if len(row) >= 4:
+                medicine = SimpleMedicine(*row[:4])
+                dll.append(medicine)
+
+        dll.merge_sort(key=key_map[field])
+        sorted_list = dll.to_list()
+
+        if "Z-A" in selected:
+            sorted_list.reverse()
+
+        self.table.delete(*self.table.get_children())
+        for med in sorted_list:
+            self.table.insert("", "end", values=(med.name, med.composition, med.uses, med.side_effect))
+
+    def open_add_medicine_page(self):
+        self.parent.show_frame(AddMedicinePage)
 
     def open_delete_medicine_page(self):
-        self.destroy()
-        delete_medicine_screen = DeleteMedicinePage()
-        delete_medicine_screen.mainloop()
+        self.parent.show_frame(DeleteMedicinePage)
     
     def close_app(self):
-        self.destroy()
+        self.parent.destroy()
         sys.exit()
 
     def open_admin_login(self):
-        self.destroy()
-        login_screen = AdminLoginScreen()
-        login_screen.mainloop()
+        self.parent.show_frame(AdminLoginScreen)
 
     def open_main_menu(self):
-        self.destroy()
-        which_one_screen = WhichOneScreen()
-        which_one_screen.mainloop()
+        self.parent.show_frame(WhichOneScreen)
 
-class AddMedicinePage(ctk.CTk):
+class AddMedicinePage(ctk.CTkFrame):
     def create_entry(self, placeholder):
         entry = ctk.CTkEntry(
             self,
@@ -490,15 +517,13 @@ class AddMedicinePage(ctk.CTk):
         entry.pack(pady=10)
         return entry
 
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Add Medicine")
+    def __init__(self, parent):
+        super().__init__(parent)
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
+        self.parent = parent
 
-        bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/admin's.png")
+        bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/admin.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
@@ -586,25 +611,6 @@ class AddMedicinePage(ctk.CTk):
         )
         self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
-    def open_delete_medicine_page(self):
-        self.destroy()
-        delete_medicine_screen = DeleteMedicinePage()
-        delete_medicine_screen.mainloop()
-    
-    def close_app(self):
-        self.destroy()
-        sys.exit()
-
-    def open_admin_login(self):
-        self.destroy()
-        login_screen = AdminLoginScreen()
-        login_screen.mainloop()
-
-    def open_main_menu(self):
-        self.destroy()
-        which_one_screen = WhichOneScreen()
-        which_one_screen.mainloop()
-
     def add_medicine_action(self):
         name = self.name_entry.get()
         comp = self.comp_entry.get()
@@ -621,20 +627,32 @@ class AddMedicinePage(ctk.CTk):
             self.side_effect_entry.delete(0, ctk.END)
 
     def display_medicine(self):
-        self.destroy()
-        display_screen = DisplayMedicinePage()
-        display_screen.mainloop()
+        self.parent.show_frame(DisplayMedicinePage)
 
-class DeleteMedicinePage(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Delete Medicine")
+    def open_delete_medicine_page(self):
+        self.parent.show_frame(DeleteMedicinePage)
+    
+    def close_app(self):
+        self.parent.destroy()
+        sys.exit()
+
+    def open_admin_login(self):
+        self.parent.show_frame(AdminLoginScreen)
+
+    def open_main_menu(self):
+        self.parent.show_frame(WhichOneScreen)
+
+from tkinter.ttk import Combobox
+from models.search import binary_search_suggestions
+
+class DeleteMedicinePage(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent =  parent
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
 
-        bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/admin's.png")
+        bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/admin.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
@@ -643,64 +661,42 @@ class DeleteMedicinePage(ctk.CTk):
         self.title_label = ctk.CTkLabel(self, text="Delete Medicine", font=ctk.CTkFont(size=32, weight="bold"), text_color="#FFFFFF", fg_color="#FF6B9D")
         self.title_label.pack(pady=80)
 
-        self.name_entry = ctk.CTkEntry(self, placeholder_text="Enter Medicine Name", fg_color="#FFFFFF", text_color="#000000", width=400, height=40, corner_radius=15,  bg_color="#FF6B9D")
-        self.name_entry.pack(pady=10)
+        raw_data = view_medicine_data()
+        self.medicine_names = sorted([row[0] for row in raw_data if row])
 
-        self.delete_button = ctk.CTkButton(self, text="Delete Medicine", command=self.delete_medicine_action, width=180, height=40, fg_color="#970032",   bg_color="#FF6B9D",text_color="#FFFFFF", font=ctk.CTkFont(size=16, weight="bold"))
+        entry_wrapper = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=15,bg_color="#FF6B9D")
+        entry_wrapper.pack(pady=10)
+
+        style = ttk.Style()
+        style.theme_use("default")
+        style.configure("Custom.TCombobox",
+                        fieldbackground="#FFFFFF",
+                        background="#FFFFFF",
+                        foreground="#FF6B9D",
+                        borderwidth=0,
+                        font=("Arial", 18))  
+
+        self.name_entry = Combobox(entry_wrapper, width=55, font=("Arial", 18), style="Custom.TCombobox")
+        self.name_entry.pack(padx=10, pady=10) 
+        self.name_entry.bind("<KeyRelease>", self.update_suggestions)
+
+        self.delete_button = ctk.CTkButton(self, text="Delete Medicine", command=self.delete_medicine_action, width=180, height=40, fg_color="#970032", bg_color="#FF6B9D", text_color="#FFFFFF", font=ctk.CTkFont(size=16, weight="bold"))
         self.delete_button.pack(pady=20)
 
-        frame_add = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_add.place(relx=0.043, rely=0.28, anchor="nw")
-        add_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/add.png")
-        self.add_image = ctk.CTkImage(light_image=add_image, dark_image=add_image, size=(100, 100))  
-        self.add_button = ctk.CTkButton(
-            frame_add, 
-            image=self.add_image, 
-            text="", 
-            fg_color="#FF6B9D", 
-            hover_color="#FFFFFF", 
-            width=100, 
-            height=100,
-            command=self.open_add_medicine_page
-        )
-        self.add_button.place(x=0, y=0) 
+        self.create_nav_buttons()
 
-        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_display.place(relx=0.043, rely=0.15, anchor="nw")
-        display_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/display all.png")
-        self.display_image = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(100, 100))  
-        self.display_button = ctk.CTkButton(
-            frame_display, 
-            image=self.display_image, 
-            text="", 
-            fg_color="#FF6B9D", 
-            hover_color="#FFFFFF", 
-            width=100, 
-            height=100,
-            command=self.display_medicine
-        )
-        self.display_button.place(x=0, y=0) 
+    def update_suggestions(self, event=None):
+        input_text = self.name_entry.get()
 
-        frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
-        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
-        self.main_menu_button.pack()
+        if not input_text:
+            self.name_entry['values'] = []
+            return
 
-        frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
-        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_admin_login)
-        self.back_button.pack()
+        matches = binary_search_suggestions(self.medicine_names, input_text)
+        self.name_entry['values'] = matches
 
-        self.exit_button = ctk.CTkButton(
-            self, 
-            text="Exit", 
-            width=100, 
-            fg_color="transparent", 
-            text_color="#FFFFFF", 
-            font=ctk.CTkFont(size=18, weight="bold"), 
-            command=self.close_app
-        )
-        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
+        if matches:
+            self.name_entry.event_generate('<Down>')  
 
     def delete_medicine_action(self):
         name = self.name_entry.get().strip()
@@ -712,44 +708,59 @@ class DeleteMedicinePage(ctk.CTk):
         messagebox.showinfo("Delete Medicine", msg)
 
         if success:
-            self.name_entry.delete(0, ctk.END)
+            self.name_entry.delete(0, tk.END)
+
+    def create_nav_buttons(self):
+        frame_add = ctk.CTkFrame(self, fg_color="#FF6B9D", width=100, height=100)
+        frame_add.place(relx=0.043, rely=0.28, anchor="nw")
+        add_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/add.png")
+        self.add_image = ctk.CTkImage(light_image=add_image, dark_image=add_image, size=(100, 100))  
+        self.add_button = ctk.CTkButton(frame_add, image=self.add_image, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=100, height=100, command=self.open_add_medicine_page)
+        self.add_button.place(x=0, y=0)
+
+        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=100, height=100)
+        frame_display.place(relx=0.043, rely=0.15, anchor="nw")
+        display_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/display all.png")
+        self.display_image = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(100, 100))  
+        self.display_button = ctk.CTkButton(frame_display, image=self.display_image, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=100, height=100, command=self.display_medicine)
+        self.display_button.place(x=0, y=0)
+
+        frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
+        frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
+        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_button.pack()
+
+        frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
+        frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
+        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_admin_login)
+        self.back_button.pack()
+
+        self.exit_button = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
+        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
+
+    def open_add_medicine_page(self):
+        self.parent.show_frame(AddMedicinePage)
+
+    def display_medicine(self):
+        self.parent.show_frame(DisplayMedicinePage)
 
     def close_app(self):
-        self.destroy()
+        self.parent.destroy()
         sys.exit()
 
     def open_admin_login(self):
-        self.destroy()
-        login_screen = AdminLoginScreen()
-        login_screen.mainloop()
+        self.parent.show_frame(AdminLoginScreen)
 
     def open_main_menu(self):
-        self.destroy()
-        which_one_screen = WhichOneScreen()
-        which_one_screen.mainloop()
+        self.parent.show_frame(WhichOneScreen)
 
-    def display_medicine(self):
-        self.destroy()
-        display_screen = DisplayMedicinePage()
-        display_screen.mainloop()
-
-    def open_add_medicine_page(self):
-        self.destroy()
-        add_medicine_screen = AddMedicinePage()
-        add_medicine_screen.mainloop()
-
-class UserLoginScreen(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.title("Pharmora - Login")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("dark-blue")
-        self.current_username = None
-
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
-        self.resizable(False, False)
+class UserLoginScreen(ctk.CTkFrame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.configure(fg_color="transparent")
+        # screen_width = self.winfo_screenwidth()
+        # screen_height = self.winfo_screenheight()
 
         self.show_login_screen()
 
@@ -760,27 +771,46 @@ class UserLoginScreen(ctk.CTk):
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        self.username_entry = ctk.CTkEntry(self, placeholder_text="Username",text_color="#000000", width=350, fg_color="#FFFFFF",border_width=0, corner_radius=0)
-        self.username_entry.place(relx=0.1, rely=0.51, anchor="w")
+        self.username_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
+        self.username_frame.place(relx=0.1, rely=0.51, anchor="w")
+        self.username_entry = ctk.CTkEntry(
+            self.username_frame,
+            placeholder_text="Username",
+            text_color="#000000",
+            width=350,
+            fg_color="#FFFFFF",
+            border_width=0,
+            corner_radius=0
+        )
+        self.username_entry.pack()
 
-        self.password_entry = ctk.CTkEntry(self, placeholder_text="Password",text_color="#000000", width=350, show="*", fg_color="#FFFFFF",border_width=0, corner_radius=0)
-        self.password_entry.place(relx=0.1, rely=0.685, anchor="w")
+        self.password_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
+        self.password_frame.place(relx=0.1, rely=0.685, anchor="w")
+        self.password_entry = ctk.CTkEntry(
+            self.password_frame,
+            placeholder_text="Password",
+            text_color="#000000",
+            width=350,
+            fg_color="#FFFFFF",
+            border_width=0,
+            corner_radius=0,
+            show="*"
+        )
+        self.password_entry.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signin_button.place(relx=0.21, rely=0.805, anchor="w")
-        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0,border_width=0, command=self.login)
+        frame_signin_button.place(relx=0.19, rely=0.8, anchor="w")
+        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
         self.signin_button.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signup_button.place(relx=0.71, rely=0.605, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, command=self.show_signup_screen)
+        frame_signup_button.place(relx=0.69, rely=0.605, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
         self.signup_button.pack()
 
-        self.username_entry.bind("<Return>", lambda event: self.password_entry.focus())
-        self.password_entry.bind("<Return>", lambda event: self.login())
-
     def show_signup_screen(self):
-        self.clear_screen()
+        for widget in self.winfo_children():
+            widget.destroy()
 
         bg_image = Image.open("C:/Users/LENOVO/OneDrive/Documents/Semester 2/Struktur Data dan Algoritma/Pharmora/assets/images/welcome back.png")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(self.winfo_screenwidth(), self.winfo_screenheight()))
@@ -788,19 +818,40 @@ class UserLoginScreen(ctk.CTk):
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        self.username_entry = ctk.CTkEntry(self, placeholder_text="Username",text_color="#000000", width=350,fg_color="#FFFFFF",border_width=0, corner_radius=0)
-        self.username_entry.place(relx=0.6, rely=0.45, anchor="w")
+        self.username_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
+        self.username_frame.place(relx=0.6, rely=0.45, anchor="w")
+        self.username_entry = ctk.CTkEntry(
+            self.username_frame,
+            placeholder_text="Username",
+            text_color="#000000",
+            width=350,
+            fg_color="#FFFFFF",
+            border_width=0,
+            corner_radius=0
+        )
+        self.username_entry.pack()
 
-        self.password_entry = ctk.CTkEntry(self, placeholder_text="Password", width=350, show="*",text_color="#000000", fg_color="#FFFFFF",border_width=0, corner_radius=0)
-        self.password_entry.place(relx=0.6, rely=0.625, anchor="w")
+        self.password_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
+        self.password_frame.place(relx=0.6, rely=0.625, anchor="w")
+        self.password_entry = ctk.CTkEntry(
+            self.password_frame,
+            placeholder_text="Password",
+            text_color="#000000",
+            width=350,
+            fg_color="#FFFFFF",
+            border_width=0,
+            corner_radius=0,
+            show="*"
+        )
+        self.password_entry.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signup_button.place(relx=0.71, rely=0.755, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0,border_width=0, command=self.register)
+        frame_signup_button.place(relx=0.69, rely=0.75, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
         self.signup_button.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signin_button.place(relx=0.21, rely=0.625, anchor="w")
+        frame_signin_button.place(relx=0.19, rely=0.625, anchor="w")
         self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
         self.back_button.pack()
 
@@ -808,12 +859,10 @@ class UserLoginScreen(ctk.CTk):
         username = self.username_entry.get()
         password = self.password_entry.get()
         user_id, role = login_user(username, password)
-        if user_id and role == "user":
-            self.current_username = username
+
+        if user_id and role == "admin":
             CTkMessagebox(title="Login Successful", message=f"Welcome, {username}!", icon="check")
-            self.show_user_dashboard()
-        elif role == "wrong_role":
-            CTkMessagebox(title="Login Failed", message="This account is not a user!", icon="cancel")
+            self.parent.show_frame(UserDashboard)
         else:
             CTkMessagebox(title="Login Failed", message="Invalid username or password", icon="cancel")
 
@@ -825,16 +874,8 @@ class UserLoginScreen(ctk.CTk):
             CTkMessagebox(title="Registration Failed", message="Username already exists!", icon="cancel")
             return
 
-        register_user(username, password, "user")
+        register_user(username, password, "admin")
         CTkMessagebox(title="Account Created", message="Account successfully created!", icon="check")
-
-    def show_user_dashboard(self):
-        dashboard = UserDashboard(self)
-        dashboard.place(x=0, y=0, relwidth=1, relheight=1)
-
-    def clear_screen(self):
-        for widget in self.winfo_children():
-            widget.destroy()
 
 class UserDashboard(ctk.CTkFrame):
     def __init__(self, master):
@@ -912,5 +953,5 @@ class UserDashboard(ctk.CTkFrame):
         self.chat_area.see("end")
 
 if __name__ == "__main__":
-    app = LoadingScreen()
+    app = AppManager()
     app.mainloop()

@@ -1,12 +1,22 @@
-def binary_search(data, target, key=lambda x: x):
-    low, high = 0, len(data) - 1
-    while low <= high:
-        mid = (low + high) // 2
-        mid_value = key(data[mid])
-        if mid_value == target:
-            return data[mid]
-        elif mid_value < target:
-            low = mid + 1
+def binary_search_suggestions(data_list, prefix):
+    left = 0
+    right = len(data_list) - 1
+    suggestions = []
+
+    while left <= right:
+        mid = (left + right) // 2
+        if data_list[mid].lower().startswith(prefix.lower()):
+            i = mid
+            while i >= 0 and data_list[i].lower().startswith(prefix.lower()):
+                suggestions.append(data_list[i])
+                i -= 1
+            i = mid + 1
+            while i < len(data_list) and data_list[i].lower().startswith(prefix.lower()):
+                suggestions.append(data_list[i])
+                i += 1
+            break
+        elif data_list[mid].lower() < prefix.lower():
+            left = mid + 1
         else:
-            high = mid - 1
-    return None
+            right = mid - 1
+    return sorted(suggestions)
