@@ -1,3 +1,5 @@
+from models.linked_list import DoubleLinkedList
+
 def binary_search_suggestions(data_list, prefix):
     left = 0
     right = len(data_list) - 1
@@ -19,4 +21,9 @@ def binary_search_suggestions(data_list, prefix):
             left = mid + 1
         else:
             right = mid - 1
-    return sorted(suggestions)
+    
+    dll = DoubleLinkedList()
+    for s in suggestions:
+        dll.append(s)
+    dll.merge_sort(key=lambda x: x.lower())
+    return dll.to_list()
