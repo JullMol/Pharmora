@@ -14,7 +14,6 @@ def load_medicines(file_path):
                 composition=row['Composition'],
                 uses=row['Uses'],
                 side_effect=row['Side_effects'],
-                image_url=row['Image URL'],
                 manufacturer=row['Manufacturer'],
                 excellent_review=row['Excellent Review %'],
                 average_review=row['Average Review %'],
