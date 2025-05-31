@@ -1,105 +1,18 @@
-You: hello
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: flu
-"
-Pharmora: I found 1426 medicines that might help:
+-111501835943629822,You: zenoxa,2025-05-31 13:54:35
+-111501835943629822,"
+Pharmora: I found 2 medicines that might help:
 
-1. Zensartan H 40mg/12.5mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
+1. Zenoxa OD 600 Tablet SR
+   Uses:  Epilepsy/Seizures
+   Rating: 52.0% positive reviews
 
-2. Xirtam AM Tablet
-   Uses:  Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-
-3. Telmijub AM 80mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-
-4. Twinblok  5mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)Prevention of Angina (heart-related chest pain)Prevention of Heart attackPrevention of Stroke
-   Rating: 100% positive reviews
-
-5. Twintel 40 Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
+2. Zenoxa 300 Tablet
+   Uses:  Epilepsy/Seizures
+   Rating: 43.0% positive reviews
 You can ask for more details about any of these medicines.
-"
-You: hello
-You: zenoxa
-You: zenoxa
-You: zenoxa
-You: zenoxa
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: alzheimer
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: history
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: hello
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: zenoxa
-"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
-"
-You: twinblok
-You: history
-You: flu
-You: flu
-"
-Pharmora: I found 1426 medicines that might help:
-
-1. Zensartan H 40mg/12.5mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-
-2. Xirtam AM Tablet
-   Uses:  Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-
-3. Telmijub AM 80mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-
-4. Twinblok  5mg Tablet
-   Uses: Treatment of Hypertension (high blood pressure)Prevention of Angina (heart-related chest pain)Prevention of Heart attackPrevention of Stroke
-   Rating: 100% positive reviews
-
-5. Twintel 40 Tablet
-   Uses: Treatment of Hypertension (high blood pressure)
-   Rating: 100% positive reviews
-You can ask for more details about any of these medicines.
-"
-You: alzheimer
-"
-Pharmora: I found 52 medicines that might help:
-
-1. Pirasure Syrup
-   Uses:  Alzheimer's disease Stroke Dementia in Parkinson's disease Age related memory loss Head injury
-   Rating: 100% positive reviews
-
-2. Prexaron Syrup Sugar Free
-   Uses: Treatment of StrokeTreatment of Head injuryTreatment of Alzheimer's diseaseTreatment of Dementia in Parkinson's disease
-   Rating: 100% positive reviews
-
-3. Donep Syrup
-   Uses:  Alzheimer's disease
-   Rating: 100% positive reviews
-
-4. Nemdaa 10 Tablet
-   Uses:  Alzheimer's disease
-   Rating: 67% positive reviews
-
-5. Nemdaa 5 Tablet
-   Uses:  Alzheimer's disease
-   Rating: 67% positive reviews
-You can ask for more details about any of these medicines.
-"
-You: flu
-"
+",2025-05-31 13:54:35
+-111501835943629822,You: flu,2025-05-31 13:54:37
+-111501835943629822,"
 Pharmora: I found 123 medicines that might help:
 
 1. Twinblok  5mg Tablet
@@ -122,9 +35,9 @@ Pharmora: I found 123 medicines that might help:
    Uses: Treatment of Erectile dysfunction
    Rating: 100.0% positive reviews
 You can ask for more details about any of these medicines.
-"
-You: alzheimer
-"
+",2025-05-31 13:54:37
+6705783777431225364,You: alzheimer,2025-05-31 13:54:53
+6705783777431225364,"
 Pharmora: I found 4 medicines that might help:
 
 1. Strocit Injection
@@ -143,4 +56,78 @@ Pharmora: I found 4 medicines that might help:
    Uses:  Alzheimer's disease Stroke Dementia in Parkinson's disease Age related memory loss Head injury
    Rating: 0.0% positive reviews
 You can ask for more details about any of these medicines.
-"
+",2025-05-31 13:54:53
+6705783777431225364,You: 'zathlin,2025-05-31 13:54:59
+6705783777431225364,"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
+",2025-05-31 13:54:59
+6705783777431225364,You: zathlin,2025-05-31 13:55:03
+6705783777431225364,"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
+",2025-05-31 13:55:03
+6705783777431225364,You: zathrin,2025-05-31 13:55:24
+6705783777431225364,"
+Pharmora: Based on your query, I found this medicine:
+ • Zathrin 250 Tablet
+• Primary Uses: Treatment of Bacterial infections
+• Excellent Reviews: 33.0% of users
+You can ask for more details about this medicine.
+",2025-05-31 13:55:24
+-111501835943629822,"
+You: headache",2025-05-31 13:56:41
+-111501835943629822,"
+Pharmora: I found 465 medicines that might help:
+
+1. Vylda-M 850 Tablet
+   Uses: Treatment of Type 2 diabetes mellitus
+   Rating: 100.0% positive reviews
+
+2. Twinblok  5mg Tablet
+   Uses: Treatment of Hypertension (high blood pressure)Prevention of Angina (heart-related chest pain)Prevention of Heart attackPrevention of Stroke
+   Rating: 100.0% positive reviews
+
+3. Tirofuse Injection
+   Uses: Prevention of Heart attack
+   Rating: 100.0% positive reviews
+
+4. Thalitero Capsule
+   Uses:  Multiple myeloma Lepra reaction
+   Rating: 100.0% positive reviews
+
+5. Swelinex Gel
+   Uses:  Pain relief
+   Rating: 100.0% positive reviews
+You can ask for more details about any of these medicines.
+",2025-05-31 13:56:41
+-111501835943629822,"
+You: stomache",2025-05-31 13:56:54
+-111501835943629822,"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
+",2025-05-31 13:56:54
+-111501835943629822,"
+You: migrain",2025-05-31 13:57:00
+-111501835943629822,"
+Pharmora: I found 24 medicines that might help:
+
+1. Migrellium 10mg Tablet
+   Uses: Prevention of Migraine
+   Rating: 100.0% positive reviews
+
+2. Topaz 200 Tablet
+   Uses:  Epilepsy/SeizuresPrevention of Migraine Lennox–Gastaut syndrome
+   Rating: 67.0% positive reviews
+
+3. Diproex ER 250 Tablet
+   Uses: Treatment of Epilepsy/SeizuresTreatment of Bipolar disorderPrevention of Migraine
+   Rating: 67.0% positive reviews
+
+4. Rizact 10 Tablet
+   Uses:  Acute migraine headache
+   Rating: 54.0% positive reviews
+
+5. Kipnol TR 40 Capsule
+   Uses: Treatment of PheochromocytomaTreatment of Hypertension (high blood pressure) Prevention of migraineTreatment of AnxietyTreatment of ArrhythmiaPrevention of Heart attackPrevention of Angina (heart-related chest pain)Treatment of Tremors
+   Rating: 48.0% positive reviews
+You can ask for more details about any of these medicines.
+",2025-05-31 13:57:00
+-111501835943629822,"
+You: history",2025-05-31 13:58:38
+-111501835943629822,"Pharmora: I couldn't find medicines related to your query. Could you describe your symptoms or the medicine you're looking for?
+",2025-05-31 13:58:38

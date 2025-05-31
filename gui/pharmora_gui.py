@@ -2108,7 +2108,11 @@ class FeedbackPage(ctk.CTkFrame):
                 reader = csv.DictReader(f)
                 for row in reader:
                     medicine_names.append(row['Medicine Name'])
-        return sorted(medicine_names)
+        dll = DoubleLinkedList()
+        for name in medicine_names:
+            dll.append(name)
+        dll.merge_sort(key=lambda x: x.lower())
+        return dll.to_list()
     
     def get_username(self):
         user_id = self.parent.user_id if hasattr(self.parent, 'user_id') else None
@@ -2395,13 +2399,14 @@ class ChatbotPage(ctk.CTkFrame):
     def show_bot_chat(self):
         self.bot_frame.place(x=200, y=100)
         self.nodes = load_medicines('data/Medicine_1000_noimage.csv').to_list()
+        user_id = getattr(self.parent, "user_id", None)
         if not self.bot_greeted:
             welcome_msg = (
                 f"Pharmora: Hi {self.username}! I can help you find information about medicines.\n"
                 "Type 'history' to see your search history or search for any medicine!\n"
             )
             self.display_message(welcome_msg)
-            for chat in load_from_csv():
+            for chat in load_from_csv(user_id):
                 self.display_message(chat)
             self.bot_greeted = True
 
@@ -2409,13 +2414,14 @@ class ChatbotPage(ctk.CTkFrame):
         user_input = self.entry.get().strip()
         if not user_input:
             return
-        query = f"You: {user_input}"
+        user_id = getattr(self.parent, "user_id", None)
+        query = f"\nYou: {user_input}"
         self.display_message(query)
-        save_to_csv(query)
+        save_to_csv(user_id, query)
 
         bot_response = response_bot(user_input, self.nodes)
         self.display_message(bot_response)
-        save_to_csv(bot_response)
+        save_to_csv(user_id, bot_response)
         self.entry.delete(0, "end")
 
         if user_input.lower() in ["exit", "quit", "keluar"]:
@@ -2428,8 +2434,9 @@ class ChatbotPage(ctk.CTkFrame):
             return
 
     def show_chat_history(self):
+        user_id = getattr(self.parent, "user_id", None)
         self.display_message("Pharmora: Here is your chat history:")
-        for chat in load_from_csv():
+        for chat in load_from_csv(user_id):
             self.display_message(chat)
 
     def display_message(self, msg):

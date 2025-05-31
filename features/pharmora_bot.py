@@ -1,21 +1,27 @@
 import csv
+import os
+from datetime import datetime
 import customtkinter as ctk
 from models.linked_list import DoubleLinkedList
 
 HISTORY_FILE = 'data/bot_history.csv'
 
-def save_to_csv(query):
-    with open(HISTORY_FILE, mode='a', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow([query])
+def save_to_csv(user_id, query):
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+    with open(HISTORY_FILE, "a", newline='', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([user_id, query, datetime.now().strftime("%Y-%m-%d %H:%M:%S")])
 
-def load_from_csv():
-    try:
-        with open(HISTORY_FILE, mode='r', encoding='utf-8') as file:
-            reader = csv.reader(file)
-            return [row[0] for row in reader]
-    except FileNotFoundError:
+def load_from_csv(user_id):
+    if not os.path.exists(HISTORY_FILE):
         return []
+    history = []
+    with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) >= 3 and str(row[0]) == str(user_id):
+                history.append(f"{row[1]} ({row[2]})")
+    return history
 
 # def chatbot(nodes):
 #     print("\nPharmora: Hi! I can help you find information about medicines.")
