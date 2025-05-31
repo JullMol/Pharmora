@@ -1,130 +1,44 @@
-class FeedbackNode:
-    def __init__(self, medicine_name, rating, comment, timestamp):
-        self.medicine_name = medicine_name
-        self.rating = rating
-        self.comment = comment
-        self.timestamp = timestamp
-        self.prev = None
-        self.next = None
-
-class FeedbackDoubleLinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
-    
-    def add_feedback(self, medicine_name, rating, comment, timestamp):
-        new_node = FeedbackNode(medicine_name, rating, comment, timestamp)
-        if not self.head:
-            self.head = self.tail = new_node
-        else:
-            self.tail.next = new_node
-            new_node.prev = self.tail
-            self.tail = new_node
-    
-    def get_all_feedbacks(self):
-        feedbacks = []
-        current = self.head
-        while current:
-            feedbacks.append({
-                'medicine_name': current.medicine_name,
-                'rating': current.rating,
-                'comment': current.comment,
-                'timestamp': current.timestamp
-            })
-            current = current.next
-        return feedbacks
-
-# ======================================
-#        Algorithm: Binary Search
-# ======================================
-
-def binary_search(sorted_list, target):
-    low = 0
-    high = len(sorted_list) - 1
-
-    while low <= high:
-        mid = (low + high) // 2
-        if sorted_list[mid].lower() == target.lower():
-            return mid
-        elif sorted_list[mid].lower() < target.lower():
-            low = mid + 1
-        else:
-            high = mid - 1
-
-    return -1
-
-# ======================================
-#          Main Function: Submit Feedback
-# ======================================
-
-import pandas as pd
+import csv
 import datetime
+import os
 
-def submit_feedback():
-    # Load dataset
-    try:
-        medicine_df = pd.read_csv('data/Medicine_Details.csv')
-    except FileNotFoundError:
-        print("Dataset not found.")
-        return
+FEEDBACK_FILE = 'data/user_feedbacks.csv'
+
+def add_user_feedback(user_id, username, medicine_name, rating, comment):
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    fieldnames = ["user_id", "username", "medicine_name", "rating", "comment", "timestamp"]
+    write_header = not os.path.exists(FEEDBACK_FILE) or os.path.getsize(FEEDBACK_FILE) == 0
+    with open(FEEDBACK_FILE, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        if write_header:
+            writer.writeheader()
+        writer.writerow({
+            "user_id": user_id,
+            "username": username,
+            "medicine_name": medicine_name,
+            "rating": rating,
+            "comment": comment,
+            "timestamp": timestamp
+        })
+    return True, "Feedback successfully added!"
+
+def get_feedbacks_by_user(user_id):
+    if not os.path.exists(FEEDBACK_FILE):
+        return []
+    with open(FEEDBACK_FILE, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        return [row for row in reader if row["user_id"] == str(user_id)]
+
+def get_feedbacks_by_medicine(medicine_name):
+    if not os.path.exists(FEEDBACK_FILE):
+        return []
+    with open(FEEDBACK_FILE, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        return [row for row in reader if row["medicine_name"].lower() == medicine_name.lower()]
     
-    if 'Medicine Name' not in medicine_df.columns:
-        print("Column 'Medicine Name' not found in the dataset.")
-        return
-
-    medicine_names = sorted(medicine_df['Medicine Name'].tolist())
-    feedback_list = FeedbackDoubleLinkedList()
-
-    while True:
-        medicine_name = input("\nEnter the medicine name (or type 'exit' to quit): ").strip()
-        if medicine_name.lower() == 'exit':
-            break
-
-        index = binary_search(medicine_names, medicine_name)
-        if index == -1:
-            print("Medicine not found. Please try again.")
-            continue
-
-        print("\nChoose a rating:\n1. Excellent\n2. Average\n3. Poor")
-        rating_choice = input("Enter your rating choice (1/2/3): ").strip()
-
-        if rating_choice == '1':
-            rating_col = 'excellent review'
-        elif rating_choice == '2':
-            rating_col = 'average review'
-        elif rating_choice == '3':
-            rating_col = 'poor review'
-        else:
-            print("Invalid choice. Please try again.")
-            continue
-
-        real_index = medicine_df[medicine_df['Medicine Name'].str.lower() == medicine_name.lower()].index[0]
-        
-        if rating_col in medicine_df.columns:
-            medicine_df.at[real_index, rating_col] += 1
-        else:
-            medicine_df[rating_col] = 0
-            medicine_df.at[real_index, rating_col] += 1
-
-        comment = input("Write your review: ").strip()
-        timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        feedback_list.add_feedback(medicine_name, rating_col, comment, timestamp)
-
-        print("✅ Feedback successfully added!")
-
-    medicine_df.to_csv('data/Medicine_Details.csv', index=False)
-
-    feedbacks = feedback_list.get_all_feedbacks()
-
-    if feedbacks:
-        try:
-            existing_feedbacks = pd.read_csv('data/user_feedbacks.csv')
-            new_feedbacks = pd.DataFrame(feedbacks)
-            combined = pd.concat([existing_feedbacks, new_feedbacks], ignore_index=True)
-            combined.to_csv('data/user_feedbacks.csv', index=False)
-        except FileNotFoundError:
-            new_feedbacks = pd.DataFrame(feedbacks)
-            new_feedbacks.to_csv('data/user_feedbacks.csv', index=False)
-
-    print("\n🚀 All feedback successfully saved. Thank you!")
+def get_all_feedbacks():
+    if not os.path.exists(FEEDBACK_FILE):
+        return []
+    with open(FEEDBACK_FILE, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        return list(reader)
