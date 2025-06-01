@@ -172,8 +172,6 @@ class AdminLoginScreen(ctk.CTkFrame):
         super().__init__(parent)
         self.parent = parent
         self.configure(fg_color="transparent")
-        # screen_width = self.winfo_screenwidth()
-        # screen_height = self.winfo_screenheight()
 
         self.show_login_screen()
 
@@ -269,23 +267,50 @@ class AdminLoginScreen(ctk.CTkFrame):
         self.back_button.pack()
 
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        user_id, role = login_user(username, password)
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
 
-        if user_id and role == "admin":
-            self.parent.show_frame(DisplayMedicinePage)
-        else:
-            tk.messagebox.showerror("Login Failed", "Invalid username or password or not an admin.")
+        if not username or not password:
+            messagebox.showerror("Login Failed", "Username and password cannot be empty!")
+            return
+
+        try:
+            user_id, role = login_user(username, password)
+            if user_id and role == "admin":
+                self.parent.show_frame(DisplayMedicinePage)
+            else:
+                messagebox.showerror("Login Failed", "Invalid username or password or not an admin.")
+        except Exception as e:
+            messagebox.showerror("Login Error", f"An error occurred: {str(e)}")
 
     def register(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
 
-        if register_user(username, password, "admin"):
-            messagebox.showinfo("Account Created", "Account successfully created as Admin!")
-        else:
-            messagebox.showerror("Registration Failed", "Username already exists.")
+        if not username or not password:
+            messagebox.showerror("Registration Failed", "Username and password cannot be empty!")
+            return
+
+        if len(username) < 4:
+            messagebox.showerror("Registration Failed", "Username must be at least 4 characters!")
+            return
+
+        if len(password) < 6:
+            messagebox.showerror("Registration Failed", "Password must be at least 6 characters!")
+            return
+
+        if ' ' in username:
+            messagebox.showerror("Registration Failed", "Username cannot contain spaces!")
+            return
+
+        try:
+            if register_user(username, password, "admin"):
+                messagebox.showinfo("Account Created", "Account successfully created as Admin!")
+                self.show_login_screen()
+            else:
+                messagebox.showerror("Registration Failed", "Username already exists or invalid input.")
+        except Exception as e:
+            messagebox.showerror("Registration Error", f"An error occurred: {str(e)}")
 
 class UserLoginScreen(ctk.CTkFrame):
     def __init__(self, parent):
@@ -386,24 +411,51 @@ class UserLoginScreen(ctk.CTkFrame):
         self.back_button.pack()
 
     def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        user_id, role = login_user(username, password)
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
 
-        if user_id and role == "user":
-            self.parent.user_id = user_id
-            self.parent.show_frame(UserDashboard)
-        else:
-            tk.messagebox.showerror("Login Failed", "Invalid username or password or not a user account.")
+        if not username or not password:
+            messagebox.showerror("Login Failed", "Username and password cannot be empty!")
+            return
+
+        try:
+            user_id, role = login_user(username, password)
+            if user_id and role == "user":
+                self.parent.user_id = user_id
+                self.parent.show_frame(UserDashboard)
+            else:
+                messagebox.showerror("Login Failed", "Invalid username or password or not a user account.")
+        except Exception as e:
+            messagebox.showerror("Login Error", f"An error occurred: {str(e)}")
 
     def register(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
+        username = self.username_entry.get().strip()
+        password = self.password_entry.get().strip()
 
-        if register_user(username, password, "user"):
-            messagebox.showinfo("Account Created", "Account successfully created as User!")
-        else:
-            messagebox.showerror("Registration Failed", "Username already exists.")
+        if not username or not password:
+            messagebox.showerror("Registration Failed", "Username and password cannot be empty!")
+            return
+
+        if len(username) < 4:
+            messagebox.showerror("Registration Failed", "Username must be at least 4 characters!")
+            return
+
+        if len(password) < 6:
+            messagebox.showerror("Registration Failed", "Password must be at least 6 characters!")
+            return
+
+        if ' ' in username:
+            messagebox.showerror("Registration Failed", "Username cannot contain spaces!")
+            return
+
+        try:
+            if register_user(username, password, "user"):
+                messagebox.showinfo("Account Created", "Account successfully created as User!")
+                self.show_login_screen()
+            else:
+                messagebox.showerror("Registration Failed", "Username already exists or invalid input.")
+        except Exception as e:
+            messagebox.showerror("Registration Error", f"An error occurred: {str(e)}")
 
 class SimpleMedicine:
     def __init__(self, name, composition, uses, side_effect):
@@ -432,7 +484,7 @@ class DisplayMedicinePage(ctk.CTkFrame):
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.place(relx=0.45, rely=0.1)
+        self.title_label.place(relx=0.45, rely=0.15)
 
         self.sort_option = ctk.CTkComboBox(
             self,
@@ -537,12 +589,12 @@ class DisplayMedicinePage(ctk.CTkFrame):
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
         frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
-        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
         frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
-        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_admin_login)
+        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_admin_login)
         self.back_button.pack()
 
         self.exit_button = ctk.CTkButton(
@@ -715,12 +767,12 @@ class AddMedicinePage(ctk.CTkFrame):
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
         frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
-        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), hover=False,command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
         frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
-        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_admin_login)
+        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), hover=False,command=self.open_admin_login)
         self.back_button.pack()
 
         self.exit_button = ctk.CTkButton(
@@ -855,12 +907,12 @@ class DeleteMedicinePage(ctk.CTkFrame):
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
-        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
-        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_admin_login)
+        self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_admin_login)
         self.back_button.pack()
 
         self.exit_button = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
@@ -1101,6 +1153,7 @@ class UserDashboard(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF",
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_main_menu
         )
@@ -1115,6 +1168,7 @@ class UserDashboard(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF", 
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_user_login
         )
@@ -1438,7 +1492,7 @@ class SearchPage(ctk.CTkFrame):
 
     def add_to_favorites(self, medicine):
         try:
-            user_id = self.parent.current_user.id if hasattr(self.parent, 'current_user') else 0
+            user_id = getattr(self.parent, "user_id", 0)
             success = add_to_favorites(user_id, medicine.name)
             if success:
                 messagebox.showinfo("Success", f"{medicine.name} added to favorites!")
@@ -1542,6 +1596,7 @@ class SearchPage(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF",
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_main_menu
         )
@@ -1556,6 +1611,7 @@ class SearchPage(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF", 
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_user_dashboard
         )
@@ -1627,72 +1683,118 @@ class FavoritePage(ctk.CTkFrame):
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.place(relx=0.5, rely=0.1, anchor="center")
+        self.title_label.place(relx=0.75, rely=0.1, anchor="center")
 
-        self.favorites_frame = ctk.CTkScrollableFrame(self, fg_color="#FF6B9D")
-        self.favorites_frame.place(relx=0.5, rely=0.3, anchor="n", relwidth=0.8, relheight=0.6)
+        self.main_frame = ctk.CTkFrame(
+            self, 
+            fg_color="#FF6B9D",  
+            corner_radius=15,
+            border_width=2,
+            bg_color="#FF6B9D",
+            border_color="#FF6B9D"
+        )
+        self.main_frame.place(relx=0.55, rely=0.53, anchor="center", relwidth=0.75, relheight=0.7)  
+
+        self.scroll_frame = ctk.CTkScrollableFrame(
+            self.main_frame, 
+            fg_color="#FF6B9D",  
+            scrollbar_button_color="#FFFFFF",
+            scrollbar_button_hover_color="#E05A8A"
+        )
+        self.scroll_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         self.initial_msg = ctk.CTkLabel(
-            self.favorites_frame,
+            self.scroll_frame,
             text="Your favorite medicines will appear here",
-            font=ctk.CTkFont(family="Roboto Flex", size=14),
-            text_color="#777777"
+            font=ctk.CTkFont(size=18, weight="bold"),
+            text_color="#FFFFFF",  # White text
+            wraplength=400
         )
-        self.initial_msg.pack(pady=50)
+        self.initial_msg.pack(pady=40, padx=20)
 
         self.load_favorites()
         self.create_nav_buttons()
         
     def load_favorites(self):
-        user_id = self.parent.current_user.id if hasattr(self.parent, 'current_user') else 0
+        user_id = getattr(self.parent, "user_id", 0)
         favorites = get_favorites(user_id)
         
         if not favorites:
             no_favs = ctk.CTkLabel(
-                self.favorites_frame,
+                self.scroll_frame,
                 text="No favorite medicines found",
-                font=ctk.CTkFont(family="Roboto Flex", size=14),
-                text_color="#777777"
+                font=ctk.CTkFont(size=16, weight="bold"),
+                text_color="#FFFFFF"
             )
-            no_favs.pack(pady=50)
+            no_favs.pack(pady=40)
             return
             
         for med in favorites:
             self.create_medicine_card(med)
 
     def create_medicine_card(self, medicine):
-        med_frame = ctk.CTkFrame(self.favorites_frame, fg_color="#FFFFFF", corner_radius=5)
-        med_frame.pack(fill="x", pady=5, padx=5)
-        
-        med_info = ctk.CTkLabel(
-            med_frame,
-            text=f"{medicine['Medicine Name']} - {medicine['Uses']}\n"
-                f"Composition: {medicine['Composition']}\n"
-                f"Side Effects: {medicine['Side_effects']}",
-            font=ctk.CTkFont(family="Roboto Flex", size=12),
-            text_color="#333333",
-            anchor="w",
-            justify="left"
+        card_frame = ctk.CTkFrame(
+            self.scroll_frame, 
+            fg_color="#E05A8A",  
+            corner_radius=10,
+            border_width=1,
+            border_color="#FFFFFF"
         )
-        med_info.pack(side="left", padx=10, pady=5, fill="x", expand=True)
+        card_frame.pack(fill="x", pady=8, padx=5)
 
-        fav_btn = ctk.CTkButton(
-            med_frame,
-            text="♥ Remove Fav",
-            font=ctk.CTkFont(family="Roboto Flex", size=10),
-            fg_color="#FFFFFF",
-            text_color="#FF6B9D",
+        info_frame = ctk.CTkFrame(card_frame, fg_color="transparent")
+        info_frame.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+
+        name_label = ctk.CTkLabel(
+            info_frame,
+            text=f"{medicine['Medicine Name']} - {medicine['Uses']}",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="#FFFFFF",  
+            anchor="w"
+        )
+        name_label.pack(anchor="w", pady=(0,5))
+
+        comp_label = ctk.CTkLabel(
+            info_frame,
+            text=f"Composition: {medicine['Composition']}",
+            font=ctk.CTkFont(size=12),
+            text_color="#FFFFFF",  
+            anchor="w"
+        )
+        comp_label.pack(anchor="w", pady=(0,5))
+
+        side_label = ctk.CTkLabel(
+            info_frame,
+            text=f"Side Effects: {medicine['Side_effects']}",
+            font=ctk.CTkFont(size=12),
+            text_color="#FFFFFF",  # White text
+            anchor="w"
+        )
+        side_label.pack(anchor="w")
+
+        remove_btn = ctk.CTkButton(
+            card_frame,
+            text="Remove",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            fg_color="#970032",
+            hover_color="#E05A8A",
+            bg_color="#E05A8A",
+            text_color="#FFFFFF",
             width=100,
+            height=30,
             command=lambda m=medicine: self.remove_favorite(m)
         )
-        fav_btn.pack(side="right", padx=10)
+        remove_btn.pack(side="right", padx=10, pady=10)
 
     def remove_favorite(self, medicine):
         user_id = self.parent.current_user.id if hasattr(self.parent, 'current_user') else 0
         success, message = remove_from_favorites(user_id, medicine['Medicine Name'])
-        messagebox.showinfo("Favorite", message)
-        self.clear_frame()
-        self.show_favorite_screen()
+        if success:
+            messagebox.showinfo("Success", message)
+            self.clear_frame()
+            self.show_favorite_screen()
+        else:
+            messagebox.showerror("Error", message)
 
     def create_nav_buttons(self):
         frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=90, height=90)
@@ -1789,6 +1891,7 @@ class FavoritePage(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF",
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_main_menu
         )
@@ -1803,6 +1906,7 @@ class FavoritePage(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF", 
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_user_dashboard
         )
@@ -1874,10 +1978,13 @@ class HistoryPage(ctk.CTkFrame):
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.place(relx=0.5, rely=0.1, anchor="center")
+        self.title_label.place(relx=0.75, rely=0.1, anchor="center")
         
-        self.history_frame = ctk.CTkScrollableFrame(self, fg_color="#FF6B9D")
-        self.history_frame.place(relx=0.5, rely=0.2, anchor="n", relwidth=0.8, relheight=0.7)
+        self.history_frame = ctk.CTkScrollableFrame(self, fg_color="#FF6B9D",corner_radius=15,
+            border_width=2,
+            bg_color="#FF6B9D",
+            border_color="#FF6B9D")
+        self.history_frame.place(relx=0.55, rely=0.2, anchor="n", relwidth=0.75, relheight=0.7)
         
         self.load_history()
         self.create_nav_buttons()
@@ -1897,7 +2004,7 @@ class HistoryPage(ctk.CTkFrame):
                 self.history_frame,
                 text="Your search history is empty.",
                 font=ctk.CTkFont(family="Roboto Flex", size=14),
-                text_color="#777777"
+                text_color="#FF6B9D"
             )
             empty_label.pack(pady=50)
             return
@@ -1914,7 +2021,7 @@ class HistoryPage(ctk.CTkFrame):
             text=f"Search Term: {entry['search_term']}\n"
                 f"Timestamp: {entry['timestamp']}",
             font=ctk.CTkFont(family="Roboto Flex", size=12),
-            text_color="#333333",
+            text_color="#FF6B9D",
             anchor="w",
             justify="left"
         )
@@ -1924,8 +2031,10 @@ class HistoryPage(ctk.CTkFrame):
             hist_frame,
             text="Repeat Search",
             font=ctk.CTkFont(family="Roboto Flex", size=10),
-            fg_color="#FFFFFF",
-            text_color="#FF6B9D",
+            fg_color="#970032",
+            text_color="#FFFFFF",
+            hover_color="#E05A8A",
+            bg_color="#FFFFFF",
             width=100,
             command=lambda term=entry['search_term']: self.repeat_search(term)
         )
@@ -2033,6 +2142,7 @@ class HistoryPage(ctk.CTkFrame):
             fg_color="#FF6B9D", 
             text_color="#FFFFFF",
             corner_radius=5, 
+            hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.open_main_menu
         )
@@ -2044,6 +2154,7 @@ class HistoryPage(ctk.CTkFrame):
             frame_back, 
             text="Back", 
             width=100, 
+            hover=False,
             fg_color="#FF6B9D", 
             text_color="#FFFFFF", 
             corner_radius=5, 
@@ -2074,7 +2185,7 @@ class HistoryPage(ctk.CTkFrame):
         self.parent.show_frame(FavoritePage)
 
     def open_feedback(self):
-        self.parent_show_frame(FeedbackPage)
+        self.parent.show_frame(FeedbackPage)
 
     def open_search(self):
         self.parent.show_frame(SearchPage)
@@ -2146,54 +2257,143 @@ class FeedbackPage(ctk.CTkFrame):
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.place(relx=0.5, rely=0.1, anchor="center")
+        self.title_label.place(relx=0.75, rely=0.1, anchor="center")
 
-        input_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", width=600, height=300, corner_radius=10)
-        input_frame.place(relx=0.5, rely=0.2, anchor="center")
-
-        medicine_label = ctk.CTkLabel(input_frame, text="Medicine Name:", font=("Roboto Flex", 14))
-        medicine_label.pack(anchor="w", pady=(5, 0), padx=10)
-        
-        self.medicine_combo = ctk.CTkComboBox(input_frame, width=400, values=[], font=("Roboto Flex", 13))
-        self.medicine_combo.set("")
-        self.medicine_combo.pack(anchor="w", pady=(0, 10), padx=10)
-        self.medicine_combo.bind("<KeyRelease>", self.update_suggestions)
-
-        rating_label = ctk.CTkLabel(input_frame, text="Rating:", font=("Roboto Flex", 14))
-        rating_label.pack(anchor="w", padx=10)
-        self.rating_combo = ctk.CTkComboBox(input_frame, values=["Excellent", "Average", "Poor"], width=100)
-        self.rating_combo.set("Excellent")
-        self.rating_combo.pack(anchor="w", pady=(0, 10), padx=10)
-
-        feedback_label = ctk.CTkLabel(input_frame, text="Please provide your feedback below:", font=("Roboto Flex", 14))
-        feedback_label.pack(anchor="w", padx=10)
-        self.feedback_text = ctk.CTkTextbox(input_frame, width=580, height=100, font=("Roboto Flex", 14))
-        self.feedback_text.pack(fill="x", pady=(5, 10), padx=10)
-
-        submit_button = ctk.CTkButton(input_frame, text="Submit", command=self.submit_feedback)
-        submit_button.place(relx=0.5, rely=0.8, anchor="center")
-
-        history_label = ctk.CTkLabel(
+        main_frame = ctk.CTkFrame(
             self,
-            text="Previous Feedback:",
-            font=ctk.CTkFont(family="Roboto Flex", size=20, weight="bold"),
+            fg_color="#FF6B9D",
+            border_color="#FF6B9D",
+            bg_color="#FF6B9D",
+            border_width=2,
+            corner_radius=15
+        )
+        main_frame.place(relx=0.55, rely=0.53, anchor="center", relwidth=0.7, relheight=0.7)  
+
+        input_frame = ctk.CTkFrame(
+            main_frame,
+            fg_color="#FF6B9D",
+            corner_radius=10
+        )
+        input_frame.pack(fill="x", padx=20, pady=20)
+
+        medicine_rating_frame = ctk.CTkFrame(
+            input_frame,
+            fg_color="transparent"
+        )
+        medicine_rating_frame.pack(fill="x", padx=15, pady=(5,5))
+
+        medicine_label = ctk.CTkLabel(
+            medicine_rating_frame,
+            text="Medicine Name:",
+            font=ctk.CTkFont(size=14, weight="bold"),
             text_color="#FFFFFF"
         )
-        history_label.place(relx=0.5, rely=0.4, anchor="center")
+        medicine_label.grid(row=0, column=0, sticky="w", pady=(0,5))
+        
+        self.medicine_combo = ctk.CTkComboBox(
+            medicine_rating_frame,
+            width=300,
+            values=[],
+            font=ctk.CTkFont(size=13),
+            dropdown_fg_color="#FFFFFF",
+            dropdown_text_color="#FF6B9D",
+            button_color="#FF6B9D"
+        )
+        self.medicine_combo.grid(row=1, column=0, sticky="w", pady=(0,15))
+        self.medicine_combo.set("") 
+        self.medicine_combo.bind("<KeyRelease>", self.update_suggestions)
 
-        self.feedback_history_frame = ctk.CTkScrollableFrame(self, fg_color="#FF6B9D")
-        self.feedback_history_frame.place(relx=0.5, rely=0.45, anchor="n", relwidth=0.8, relheight=0.45)
+        rating_label = ctk.CTkLabel(
+            medicine_rating_frame,
+            text="Rating:",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="#FFFFFF"
+        )
+        rating_label.grid(row=0, column=1, sticky="w", padx=(50,0), pady=(0,5))
+        
+        self.rating_combo = ctk.CTkComboBox(
+            medicine_rating_frame,
+            values=["Excellent", "Average", "Poor"],
+            width=150,
+            font=ctk.CTkFont(size=13),
+            dropdown_fg_color="#FFFFFF",
+            dropdown_text_color="#333333",
+            button_color="#FF6B9D"
+        )
+        self.rating_combo.set("Excellent")
+        self.rating_combo.grid(row=1, column=1, sticky="w", padx=(50,0), pady=(0,15))
+
+        feedback_label = ctk.CTkLabel(
+            input_frame,
+            text="Your Feedback:",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="#FFFFFF"
+        )
+        feedback_label.pack(anchor="w", padx=15, pady=(5,5))
+        
+        self.feedback_text = ctk.CTkTextbox(
+            input_frame,
+            width=580,
+            height=50, 
+            font=ctk.CTkFont(size=13),
+            fg_color="#FFFFFF",
+            border_color="#FF6B9D",
+            border_width=1,
+            text_color="#FF6B9D"
+        )
+        self.feedback_text.pack(fill="x", padx=15, pady=(0,15))
+
+        submit_button = ctk.CTkButton(
+            input_frame,
+            text="Submit Feedback",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            fg_color="#970032",
+            hover_color="#800029",
+            text_color="#FFFFFF",
+            width=200,
+            height=40,
+            command=self.submit_feedback
+        )
+        submit_button.pack(pady=(10,15))  
+
+        history_frame = ctk.CTkFrame(
+            main_frame,
+            fg_color="#FFFFFF",
+            corner_radius=10
+        )
+        history_frame.pack(fill="both", expand=True, padx=20, pady=(0,20))
+
+        history_title = ctk.CTkLabel(
+            history_frame,
+            text="Feedback History",
+            font=ctk.CTkFont(size=18, weight="bold"),
+            text_color="#FF6B9D"
+        )
+        history_title.pack(pady=(15,10))
+
+        self.history_scroll = ctk.CTkScrollableFrame(
+            history_frame,
+            fg_color="#FFFFFF",
+            scrollbar_button_color="#FF6B9D",
+            height=180  
+        )
+        self.history_scroll.pack(fill="both", expand=True, padx=10, pady=(0,10))
         
         self.create_nav_buttons()
         self.display_feedback_history()
 
-    def update_suggestions(self, event=None):
-        input_text = self.medicine_combo.get().strip().lower()
-        if input_text:
-            suggestions = [med for med in self.medicine_names if input_text in med.lower()]
-            self.medicine_combo.configure(values=suggestions)
-        else:
+    def update_suggestions(self, event):
+        input_text = self.medicine_combo.get()
+        
+        if not input_text:
             self.medicine_combo.configure(values=[])
+            return
+        
+        matches = binary_search_suggestions(self.medicine_names, input_text)
+        self.medicine_combo.configure(values=matches)
+        
+        if matches and (event is None or event.keysym not in ['Return', 'Tab']):
+            self.medicine_combo._open_dropdown_menu()
 
     def submit_feedback(self):
         medicine_name = self.medicine_combo.get().strip()
@@ -2220,42 +2420,80 @@ class FeedbackPage(ctk.CTkFrame):
             self.display_feedback_history()
 
     def display_feedback_history(self):
-        for widget in self.feedback_history_frame.winfo_children():
+        for widget in self.history_scroll.winfo_children():
             widget.destroy()
 
         feedbacks = get_all_feedbacks()
-        # user_id = self.parent.current_user.id if hasattr(self.parent, 'current_user') else 0
-        # feedbacks = get_feedbacks_by_user(user_id)
 
         if not feedbacks:
             empty_label = ctk.CTkLabel(
-                self.feedback_history_frame,
-                text="No feedback available.",
-                font=ctk.CTkFont(family="Roboto Flex", size=14),
+                self.history_scroll,
+                text="No feedback history available",
+                font=ctk.CTkFont(size=14),
                 text_color="#777777"
             )
-            empty_label.pack(pady=50)
+            empty_label.pack(pady=40)
             return
 
-        # username = self.get_username()
-        for feedback in feedbacks:
-            feedback_frame = ctk.CTkFrame(self.feedback_history_frame, fg_color="#FFFFFF", corner_radius=10, border_width=1, border_color="#FF6B9D")
-            feedback_frame.pack(fill="x", pady=10, padx=10)
+        for feedback in reversed(feedbacks):
+            feedback_card = ctk.CTkFrame(
+                self.history_scroll,
+                fg_color="#FFF0F5",
+                corner_radius=10,
+                border_color="#FF6B9D",
+                border_width=1
+            )
+            feedback_card.pack(fill="x", pady=5, padx=5)
 
-            username_label = ctk.CTkLabel(feedback_frame, text=feedback['username'], font=ctk.CTkFont(size=14, weight="bold"), text_color="#333333")
-            username_label.pack(anchor="w", padx=10, pady=(10,0))
+            header_frame = ctk.CTkFrame(feedback_card, fg_color="transparent")
+            header_frame.pack(fill="x", padx=10, pady=(10,5))
 
-            medicine_label = ctk.CTkLabel(feedback_frame, text=f"Medicine: {feedback['medicine_name']}", font=ctk.CTkFont(size=12), text_color="#333333")
-            medicine_label.pack(anchor="w", padx=10)
+            username_label = ctk.CTkLabel(
+                header_frame,
+                text=feedback['username'],
+                font=ctk.CTkFont(size=14, weight="bold"),
+                text_color="#333333"
+            )
+            username_label.pack(side="left")
 
-            rating_color = {"Excellent": "#4CAF50", "Average": "#FFC107", "Poor": "#F44336"}.get(feedback['rating'], "#333333")
-            rating_label = ctk.CTkLabel(feedback_frame, text=f"Rating: {feedback['rating']}", font=ctk.CTkFont(size=12), text_color=rating_color)
-            rating_label.pack(anchor="w", padx=10)
+            rating_color = {
+                "Excellent": "#4CAF50", 
+                "Average": "#FFC107", 
+                "Poor": "#F44336"
+            }.get(feedback['rating'], "#333333")
+            
+            rating_label = ctk.CTkLabel(
+                header_frame,
+                text=feedback['rating'],
+                font=ctk.CTkFont(size=14, weight="bold"),
+                text_color=rating_color
+            )
+            rating_label.pack(side="right")
 
-            comment_label = ctk.CTkLabel(feedback_frame, text=f"Comment: {feedback['comment']}", font=ctk.CTkFont(size=12), text_color="#333333", wraplength=500, justify="left")
-            comment_label.pack(anchor="w", padx=10)
+            medicine_label = ctk.CTkLabel(
+                feedback_card,
+                text=f"Medicine: {feedback['medicine_name']}",
+                font=ctk.CTkFont(size=12),
+                text_color="#555555"
+            )
+            medicine_label.pack(anchor="w", padx=10, pady=(0,5))
 
-            timestamp_label = ctk.CTkLabel(feedback_frame, text=f"Submitted: {feedback['timestamp']}", font=ctk.CTkFont(size=10), text_color="#777777")
+            comment_label = ctk.CTkLabel(
+                feedback_card,
+                text=feedback['comment'],
+                font=ctk.CTkFont(size=12),
+                text_color="#333333",
+                wraplength=600,
+                justify="left"
+            )
+            comment_label.pack(anchor="w", padx=10, pady=(0,5))
+
+            timestamp_label = ctk.CTkLabel(
+                feedback_card,
+                text=f"Submitted: {feedback['timestamp']}",
+                font=ctk.CTkFont(size=10),
+                text_color="#777777"
+            )
             timestamp_label.pack(anchor="w", padx=10, pady=(0,10))
 
     def create_nav_buttons(self):
@@ -2296,12 +2534,12 @@ class FeedbackPage(ctk.CTkFrame):
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
-        self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_back.place(relx=0.25, rely=0.125, anchor="sw")
-        self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_user_dashboard)
+        self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_user_dashboard)
         self.back_btn.pack()
 
         self.exit_btn = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
@@ -2371,62 +2609,111 @@ class ChatbotPage(ctk.CTkFrame):
 
         self.title_label = ctk.CTkLabel(
             self,
-            text="Feedback",
+            text="Chatbot",
             font=ctk.CTkFont(family="Roboto Flex", size=32, weight="bold"),
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.place(relx=0.5, rely=0.1, anchor="center")
+        self.title_label.place(relx=0.75, rely=0.1, anchor="center")
 
-        self.bot_frame = ctk.CTkFrame(self, fg_color="#FF6B9D", width=1100, height=600, corner_radius=60)
-        self.bot_frame.place(x=200, y=100)
+        self.bot_frame = ctk.CTkFrame(
+            self,
+            fg_color="#FFFFFF",
+            border_color="#FF6B9D",
+            bg_color="#FF6B9D",
+            border_width=2,
+            corner_radius=15,
+            width=900,  
+            height=500  
+        )
+        self.bot_frame.place(relx=0.53, rely=0.55, anchor="center")
 
-        self.chat_area = ctk.CTkTextbox(self.bot_frame, width=1050, height=500, state="disabled")
-        self.chat_area.place(x=25, y=25)
+        self.chat_area = ctk.CTkTextbox(
+            self.bot_frame,
+            width=850,
+            height=400,
+            state="disabled",
+            fg_color="#FF6B9D",
+            text_color="#FFFFFF",  
+            font=ctk.CTkFont(size=13),
+            wrap="word"
+        )
+        self.chat_area.place(relx=0.5, rely=0.45, anchor="center")
 
-        self.entry = ctk.CTkEntry(self.bot_frame, width=900)
-        self.entry.place(x=25, y=540)
-        self.send_btn = ctk.CTkButton(self.bot_frame, text="Send", command=self.send_message)
-        self.send_btn.place(x=950, y=540)
+        input_frame = ctk.CTkFrame(
+            self.bot_frame,
+            fg_color="#FFFFFF",
+            height=60
+        )
+        input_frame.place(relx=0.5, rely=0.9, anchor="center", relwidth=0.95)
+
+        self.entry = ctk.CTkEntry(
+            input_frame,
+            width=600,
+            height=40,
+            placeholder_text="Type your message here...",
+            fg_color="#FFFFFF",
+            border_color="#FF6B9D",
+            text_color="#FF6B9D"
+        )
+        self.entry.pack(side="left", padx=5)
         self.entry.bind("<Return>", lambda event: self.send_message())
 
-        self.bot_frame.place_forget()
-        self.bot_greeted = False
+        self.send_btn = ctk.CTkButton(
+            input_frame,
+            text="Send",
+            width=100,
+            height=40,
+            fg_color="#970032",
+            hover_color="#800029",
+            text_color="#FFFFFF",
+            font=ctk.CTkFont(weight="bold"),
+            command=self.send_message
+        )
+        self.send_btn.pack(side="left", padx=5)
 
+        self.bot_greeted = False
         self.show_bot_chat()
         self.create_nav_buttons()
 
     def show_bot_chat(self):
-        self.bot_frame.place(x=200, y=100)
         self.nodes = load_medicines('data/Medicine_1000_noimage.csv').to_list()
         user_id = getattr(self.parent, "user_id", None)
+        
         if not self.bot_greeted:
             welcome_msg = (
-                f"Pharmora: Hi {self.username}! I can help you find information about medicines.\n"
-                "Type 'history' to see your search history or search for any medicine!\n"
+                f"Pharmora: Hi {self.username}! I'm here to help you with medicine information.\n"
+                "You can ask me about:\n"
+                "- Medicine details\n"
+                "- Side effects\n"
+                "- Usage instructions\n"
+                "Type 'history' to see your previous queries.\n"
             )
             self.display_message(welcome_msg)
+            
             for chat in load_from_csv(user_id):
                 self.display_message(chat)
+            
             self.bot_greeted = True
 
     def send_message(self):
         user_input = self.entry.get().strip()
         if not user_input:
             return
+        
         user_id = getattr(self.parent, "user_id", None)
-        query = f"\nYou: {user_input}"
-        self.display_message(query)
-        save_to_csv(user_id, query)
-
+        
+        self.display_message(f"You: {user_input}", is_user=True)
+        save_to_csv(user_id, f"You: {user_input}")
+        
         bot_response = response_bot(user_input, self.nodes)
-        self.display_message(bot_response)
-        save_to_csv(user_id, bot_response)
+        self.display_message(f"Pharmora: {bot_response}")
+        save_to_csv(user_id, f"Pharmora: {bot_response}")
+        
         self.entry.delete(0, "end")
 
         if user_input.lower() in ["exit", "quit", "keluar"]:
-            self.display_message("Pharmora: Thank you for using Pharmora. Stay healthy!")
-            self.bot_frame.place_forget()
+            self.display_message("Pharmora: Thank you for chatting with me! Stay healthy!")
             return
 
         if user_input.lower() in ["history", "riwayat"]:
@@ -2435,13 +2722,21 @@ class ChatbotPage(ctk.CTkFrame):
 
     def show_chat_history(self):
         user_id = getattr(self.parent, "user_id", None)
-        self.display_message("Pharmora: Here is your chat history:")
+        self.display_message("\nPharmora: Your chat history:")
         for chat in load_from_csv(user_id):
             self.display_message(chat)
 
-    def display_message(self, msg):
+    def display_message(self, msg, is_user=False):
         self.chat_area.configure(state="normal")
-        self.chat_area.insert("end", msg + "\n")
+        
+        if is_user:
+            self.chat_area.tag_config("user", foreground="#970032")  
+        
+        if is_user:
+            self.chat_area.insert("end", msg + "\n", "user")
+        else:
+            self.chat_area.insert("end", msg + "\n")
+        
         self.chat_area.configure(state="disabled")
         self.chat_area.see("end")
 
@@ -2492,12 +2787,12 @@ class ChatbotPage(ctk.CTkFrame):
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
-        self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_main_menu)
+        self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_back.place(relx=0.25, rely=0.125, anchor="sw")
-        self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), command=self.open_user_dashboard)
+        self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_user_dashboard)
         self.back_btn.pack()
 
         self.exit_btn = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
