@@ -33,13 +33,15 @@ class AppManager(ctk.CTk):
         self.user_id = None
         self.history_manager = HistoryManager()
 
+        # self.show_frame(UserDashboard)
         self.show_frame(LoadingScreen)
 
-    def show_frame(self, frame_class):
+
+    def show_frame(self, frame_class, **kwargs): 
         if self.active_frame is not None:
             self.active_frame.pack_forget()  
             self.active_frame.destroy()      
-        self.active_frame = frame_class(self)
+        self.active_frame = frame_class(self, **kwargs)
         self.active_frame.pack(fill="both", expand=True)
  
 class LoadingScreen(ctk.CTkFrame):
@@ -125,15 +127,15 @@ class WhichOneScreen(ctk.CTkFrame):
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.admin_frame = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        self.admin_frame.place(relx=0.32, rely=0.8, anchor="center")
+        self.admin_frame.place(relx=0.32, rely=0.79, anchor="center")
 
         baloo_font = ("Baloo Bhai 2", 30, "bold")
         self.admin_button = ctk.CTkButton(
             self.admin_frame,
             text="Admin",
             font=baloo_font,
-            width=185,
-            height=55,
+            width=200,
+            height=75,
             corner_radius=0,
             fg_color="#FF6B9D",
             text_color="#FFFFFF",
@@ -144,14 +146,14 @@ class WhichOneScreen(ctk.CTkFrame):
         self.admin_button.pack()
 
         self.user_frame = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        self.user_frame.place(relx=0.68, rely=0.8, anchor="center")
+        self.user_frame.place(relx=0.68, rely=0.79, anchor="center")
 
         self.user_button = ctk.CTkButton(
             self.user_frame,
             text="User",
             font=baloo_font,
-            width=185,
-            height=55,
+            width=200,
+            height=75,
             corner_radius=0,
             fg_color="#FF6B9D",
             text_color="#FFFFFF",
@@ -194,6 +196,7 @@ class AdminLoginScreen(ctk.CTkFrame):
             corner_radius=0
         )
         self.username_entry.pack()
+        self.username_entry.bind("<Return>", lambda event: self.password_entry.focus_set())
 
         self.password_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
         self.password_frame.place(relx=0.1, rely=0.685, anchor="w")
@@ -208,15 +211,16 @@ class AdminLoginScreen(ctk.CTkFrame):
             show="*"
         )
         self.password_entry.pack()
+        self.password_entry.bind("<Return>", lambda event: self.login())
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signin_button.place(relx=0.19, rely=0.8, anchor="w")
-        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
+        frame_signin_button.place(relx=0.19, rely=0.805, anchor="w")
+        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=200, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
         self.signin_button.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
         frame_signup_button.place(relx=0.69, rely=0.605, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=200, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
         self.signup_button.pack()
 
     def show_signup_screen(self):
@@ -257,13 +261,13 @@ class AdminLoginScreen(ctk.CTkFrame):
         self.password_entry.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signup_button.place(relx=0.69, rely=0.75, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
+        frame_signup_button.place(relx=0.7, rely=0.755, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=200, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
         self.signup_button.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signin_button.place(relx=0.19, rely=0.625, anchor="w")
-        self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
+        frame_signin_button.place(relx=0.2, rely=0.625, anchor="w")
+        self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=200, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
         self.back_button.pack()
 
     def login(self):
@@ -338,6 +342,7 @@ class UserLoginScreen(ctk.CTkFrame):
             corner_radius=0
         )
         self.username_entry.pack()
+        self.username_entry.bind("<Return>", lambda event: self.password_entry.focus_set())
 
         self.password_frame = ctk.CTkFrame(self, fg_color="#FFFFFF", corner_radius=0)
         self.password_frame.place(relx=0.1, rely=0.685, anchor="w")
@@ -352,15 +357,16 @@ class UserLoginScreen(ctk.CTkFrame):
             show="*"
         )
         self.password_entry.pack()
+        self.password_entry.bind("<Return>", lambda event: self.login())
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signin_button.place(relx=0.19, rely=0.8, anchor="w")
-        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
+        frame_signin_button.place(relx=0.19, rely=0.805, anchor="w")
+        self.signin_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=200, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.login)
         self.signin_button.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
         frame_signup_button.place(relx=0.69, rely=0.605, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Create Account", width=200, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_signup_screen)
         self.signup_button.pack()
 
     def show_signup_screen(self):
@@ -401,13 +407,13 @@ class UserLoginScreen(ctk.CTkFrame):
         self.password_entry.pack()
 
         frame_signup_button = ctk.CTkFrame(self, fg_color="#FFFFFF")
-        frame_signup_button.place(relx=0.69, rely=0.75, anchor="w")
-        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=150, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
+        frame_signup_button.place(relx=0.7, rely=0.755, anchor="w")
+        self.signup_button = ctk.CTkButton(frame_signup_button, text="Sign Up", width=200, fg_color="#FFFFFF", text_color="#FF6B9D", corner_radius=0, border_width=0, hover=False, command=self.register)
         self.signup_button.pack()
 
         frame_signin_button = ctk.CTkFrame(self, fg_color="#FF6B9D")
-        frame_signin_button.place(relx=0.19, rely=0.625, anchor="w")
-        self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
+        frame_signin_button.place(relx=0.2, rely=0.625, anchor="w")
+        self.back_button = ctk.CTkButton(frame_signin_button, text="Sign In", width=200, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=0, border_width=0, hover=False, command=self.show_login_screen)
         self.back_button.pack()
 
     def login(self):
@@ -471,7 +477,7 @@ class DisplayMedicinePage(ctk.CTkFrame):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
 
-        bg_image = Image.open("assets/images/admin.png")
+        bg_image = Image.open("assets/images/admin's.jpg")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
@@ -554,27 +560,27 @@ class DisplayMedicinePage(ctk.CTkFrame):
         self.load_data()
 
         frame_add = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_add.place(relx=0.043, rely=0.28, anchor="nw")
+        frame_add.place(relx=0.05, rely=0.3, anchor="nw")
 
         add_image = Image.open("assets/images/add.png")
-        self.add_image = ctk.CTkImage(light_image=add_image, dark_image=add_image, size=(100, 100))  
+        self.add_image = ctk.CTkImage(light_image=add_image, dark_image=add_image, size=(120, 120))  
         self.add_button = ctk.CTkButton(
             frame_add, 
             image=self.add_image, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=100, 
-            height=100,
+            width=120, 
+            height=120,
             command=self.open_add_medicine_page
         )
         self.add_button.place(x=0, y=0)  
 
         frame_delete = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_delete.place(relx=0.043, rely=0.4, anchor="nw")
+        frame_delete.place(relx=0.05, rely=0.44, anchor="nw")
         
         delete_image = Image.open("assets/images/delete.png")
-        self.delete_image = ctk.CTkImage(light_image=delete_image, dark_image=delete_image, size=(80, 80))  
+        self.delete_image = ctk.CTkImage(light_image=delete_image, dark_image=delete_image, size=(100, 100))  
         self.delete_button = ctk.CTkButton(
             frame_delete, 
             image=self.delete_image, 
@@ -588,19 +594,20 @@ class DisplayMedicinePage(ctk.CTkFrame):
         self.delete_button.place(x=0, y=0) 
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.07, anchor="sw")
         self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
+        frame_back_button.place(relx=0.25, rely=0.07, anchor="sw")
         self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_admin_login)
         self.back_button.pack()
 
         self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
@@ -698,7 +705,7 @@ class AddMedicinePage(ctk.CTkFrame):
         screen_height = self.winfo_screenheight()
         self.parent = parent
 
-        bg_image = Image.open("assets/images/admin.png")
+        bg_image = Image.open("assets/images/admin's.jpg")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
@@ -710,7 +717,7 @@ class AddMedicinePage(ctk.CTkFrame):
             text_color="#FFFFFF",
             fg_color="#FF6B9D"
         )
-        self.title_label.pack(pady=80)
+        self.title_label.pack(pady=120)
 
         self.name_entry = self.create_entry("Name Medicine")
         self.comp_entry = self.create_entry("Composition")
@@ -732,7 +739,7 @@ class AddMedicinePage(ctk.CTkFrame):
         self.submit_button.pack(pady=35)
 
         frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_display.place(relx=0.043, rely=0.15, anchor="nw")
+        frame_display.place(relx=0.05, rely=0.15, anchor="nw")
 
         display_image = Image.open("assets/images/display all.png")
         self.display_image = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(100, 100))  
@@ -749,10 +756,10 @@ class AddMedicinePage(ctk.CTkFrame):
         self.display_button.place(x=0, y=0) 
 
         frame_delete = ctk.CTkFrame(self, fg_color="#FF6B9D",width=100, height=100)
-        frame_delete.place(relx=0.043, rely=0.4, anchor="nw")
+        frame_delete.place(relx=0.05, rely=0.44, anchor="nw")
 
         delete_image = Image.open("assets/images/delete.png")
-        self.delete_image = ctk.CTkImage(light_image=delete_image, dark_image=delete_image, size=(80, 80))  
+        self.delete_image = ctk.CTkImage(light_image=delete_image, dark_image=delete_image, size=(100, 100))  
         self.delete_button = ctk.CTkButton(
             frame_delete, 
             image=self.delete_image, 
@@ -766,19 +773,20 @@ class AddMedicinePage(ctk.CTkFrame):
         self.delete_button.place(x=0, y=0) 
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.07, anchor="sw")
         self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF",corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), hover=False,command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D",corner_radius=5)
-        frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
+        frame_back_button.place(relx=0.25, rely=0.07, anchor="sw")
         self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"), hover=False,command=self.open_admin_login)
         self.back_button.pack()
 
         self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
@@ -827,14 +835,14 @@ class DeleteMedicinePage(ctk.CTkFrame):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
 
-        bg_image = Image.open("assets/images/admin.png")
+        bg_image = Image.open("assets/images/admin's.jpg")
         self.bg_photo = ctk.CTkImage(light_image=bg_image, dark_image=bg_image, size=(screen_width, screen_height))
 
         self.bg_label = ctk.CTkLabel(self, image=self.bg_photo, text="")
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.title_label = ctk.CTkLabel(self, text="Delete Medicine", font=ctk.CTkFont(size=32, weight="bold"), text_color="#FFFFFF", fg_color="#FF6B9D")
-        self.title_label.pack(pady=80)
+        self.title_label.pack(pady=120)
 
         raw_data = view_medicine_data()
         dll = DoubleLinkedList()
@@ -892,30 +900,30 @@ class DeleteMedicinePage(ctk.CTkFrame):
 
     def create_nav_buttons(self):
         frame_add = ctk.CTkFrame(self, fg_color="#FF6B9D", width=100, height=100)
-        frame_add.place(relx=0.043, rely=0.28, anchor="nw")
+        frame_add.place(relx=0.05, rely=0.3, anchor="nw")
         add_image = Image.open("assets/images/add.png")
         self.add_image = ctk.CTkImage(light_image=add_image, dark_image=add_image, size=(100, 100))  
         self.add_button = ctk.CTkButton(frame_add, image=self.add_image, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=100, height=100, command=self.open_add_medicine_page)
         self.add_button.place(x=0, y=0)
 
         frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=100, height=100)
-        frame_display.place(relx=0.043, rely=0.15, anchor="nw")
+        frame_display.place(relx=0.05, rely=0.15, anchor="nw")
         display_image = Image.open("assets/images/display all.png")
         self.display_image = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(100, 100))  
         self.display_button = ctk.CTkButton(frame_display, image=self.display_image, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=100, height=100, command=self.display_medicine)
         self.display_button.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.08, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.07, anchor="sw")
         self.main_menu_button = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_button.pack()
 
         frame_back_button = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back_button.place(relx=0.25, rely=0.08, anchor="sw")
+        frame_back_button.place(relx=0.25, rely=0.07, anchor="sw")
         self.back_button = ctk.CTkButton(frame_back_button, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_admin_login)
         self.back_button.pack()
 
-        self.exit_button = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
+        self.exit_button = ctk.CTkButton(self, text="Exit", width=200,height=40, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
         self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
     def open_add_medicine_page(self):
@@ -1059,93 +1067,93 @@ class UserDashboard(ctk.CTkFrame):
         self.load_data()
 
     def create_nav_buttons(self):
-        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_search.place(relx=0.045, rely=0.23, anchor="nw")
         
         search_img = Image.open("assets/images/search.png")
-        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(90, 90))  
+        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(150, 150))  
         self.search_btn = ctk.CTkButton(
             frame_search, 
             image=self.search_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_search
         )
         self.search_btn.place(x=0, y=0)
 
-        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_fav.place(relx=0.045, rely=0.35, anchor="nw")
         
         fav_img = Image.open("assets/images/star.png")
-        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(90, 90))  
+        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(150, 150))  
         self.fav_btn = ctk.CTkButton(
             frame_fav, 
             image=self.fav_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_favorites
         )
         self.fav_btn.place(x=0, y=0)
 
-        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_feedback.place(relx=0.045, rely=0.47, anchor="nw")
         
         feedback_img = Image.open("assets/images/feedback.png")
-        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(90, 90))  
+        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(150, 150))  
         self.feedback_btn = ctk.CTkButton(
             frame_feedback, 
             image=self.feedback_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_feedback
         )
         self.feedback_btn.place(x=0, y=0)
 
-        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_history.place(relx=0.043, rely=0.6, anchor="nw")
         
         history_img = Image.open("assets/images/history.png")
-        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(90, 90))  
+        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(150, 150))  
         self.history_btn = ctk.CTkButton(
             frame_history, 
             image=self.history_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_history
         )
         self.history_btn.place(x=0, y=0)
 
-        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_chatbot.place(relx=0.043, rely=0.74, anchor="nw")
         
         chatbot_img = Image.open("assets/images/bot.png")
-        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(90, 90))  
+        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(150, 150))  
         self.chatbot_btn = ctk.CTkButton(
             frame_chatbot, 
             image=self.chatbot_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_chatbot
         )
         self.chatbot_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(
             frame_main_menu, 
             text="Main Menu", 
@@ -1160,7 +1168,7 @@ class UserDashboard(ctk.CTkFrame):
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(
             frame_back, 
             text="Back", 
@@ -1174,23 +1182,24 @@ class UserDashboard(ctk.CTkFrame):
         )
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(
+        self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.close_app
         )
-        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
+        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
         for widget in self.winfo_children():
             widget.destroy()
 
     def open_search(self):
-        self.parent.show_frame(SearchPage)
+        self.parent.show_frame(SearchPage, medicines=self.medicines) 
 
     def open_favorites(self):
         self.parent.show_frame(FavoritePage)
@@ -1202,7 +1211,7 @@ class UserDashboard(ctk.CTkFrame):
         self.parent.show_frame(HistoryPage)
         
     def open_chatbot(self):
-        self.parent.show_frame(ChatbotPage)
+        self.parent.show_frame(ChatbotPage, medicines=self.medicines)
 
     def open_main_menu(self):
         self.parent.show_frame(WhichOneScreen)
@@ -1215,17 +1224,18 @@ class UserDashboard(ctk.CTkFrame):
         sys.exit()
 
 class SearchPage(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, medicines=None):
         super().__init__(parent)
         self.parent = parent
         self.configure(fg_color="transparent")
-        self.medicines = load_medicines('data/Medicine_Details.csv').to_list()
+        self.medicines = load_medicines("data/Medicine_1000_noimage.csv").to_list() if medicines is None else medicines
+        self.show_search_screen()
+
         dll = DoubleLinkedList()
         for med in self.medicines:
             dll.append(med.name)
         dll.merge_sort(key=lambda name: name.lower())
         self.medicine_names = dll.to_list()
-        self.show_search_screen()
 
     def show_search_screen(self):
         self.clear_frame()      
@@ -1238,36 +1248,36 @@ class SearchPage(ctk.CTkFrame):
         self.main_container = ctk.CTkFrame(
             self, 
             fg_color="#FFFFFF", 
-            width=int(self.winfo_screenwidth() * 0.9),  
-            height=int(self.winfo_screenheight() * 0.8), 
+            width=self.winfo_screenwidth() * 0.75,  
+            height=self.winfo_screenheight() * 0.9, 
             border_width=0,
             bg_color="#FF6B9D"
         )
-        self.main_container.place(relx=0.5, rely=0.55, anchor="center")
+        self.main_container.place(relx=0.538, rely=0.5, anchor="center")
 
         header = ctk.CTkFrame(
             self.main_container, 
             fg_color="#FF6B9D", 
-            height=80, 
-            corner_radius=20
+            height=180, 
+            corner_radius=20 
         )
-        header.pack(fill="x", padx=10, pady=10)
+        header.pack(fill="x", padx=25, pady=25)
 
         search_bar = ctk.CTkFrame(
             header, 
             fg_color="#FFFFFF", 
-            height=50, 
-            corner_radius=25
+            height=100, 
+            corner_radius=50
         )
-        search_bar.pack(pady=15, padx=20, fill="x")
+        search_bar.pack(pady=40, padx=50, fill="x")
         
         search_icon = ctk.CTkLabel(
             search_bar, 
             text="🔍", 
-            font=ctk.CTkFont(size=20), 
+            font=ctk.CTkFont(size=40), 
             text_color="#FF6B9D"
         )  
-        search_icon.pack(side="left", padx=15)
+        search_icon.pack(side="left", padx=40)
         
         style = ttk.Style()
         style.theme_use('default')
@@ -1277,8 +1287,8 @@ class SearchPage(ctk.CTkFrame):
             foreground='#000000',
             background='#FFFFFF',
             bordercolor='#FF6B9D',
-            font=('Arial', 14),
-            padding=5
+            font=('Arial', 24),
+            padding=16
         )
         style.map(
             'TCombobox', 
@@ -1288,22 +1298,25 @@ class SearchPage(ctk.CTkFrame):
         
         self.search_entry = ttk.Combobox(
             search_bar,
-            width=40,
-            font=('Arial', 14),
+            width=55,
+            font=('Arial', 24),
             style='TCombobox'
         )
-        self.search_entry.pack(side="left", fill="x", expand=True, padx=5)
+        self.search_entry.pack(side="left", fill="x", expand=True, padx=(15, 40), pady=20)
         self.search_entry.bind("<KeyRelease>", self.update_suggestions)
 
-        split_container = ctk.CTkFrame(
-            self.main_container, 
-            fg_color="transparent"
+        self.split_container = ctk.CTkFrame(
+            self.main_container,
+            fg_color="transparent",
         )
-        split_container.pack(fill="both", expand=True, padx=10, pady=(0,10))
+        self.split_container.pack(fill="both", expand=True, padx=20, pady=(0, 20))
 
+        self.after(100, lambda: self.setup_panels())
+
+    def setup_panels(self):
         self.detail_panel = ctk.CTkScrollableFrame(
-            split_container,
-            width=500,  
+            self.split_container,
+            width=self.split_container.winfo_width() * 0.7,
             fg_color="#FFFFFF",
             corner_radius=15,
             border_width=1,
@@ -1311,10 +1324,10 @@ class SearchPage(ctk.CTkFrame):
             scrollbar_button_color="#FF6B9D",
             scrollbar_button_hover_color="#E05A8A"
         )
-        self.detail_panel.pack(side="left", fill="y", padx=(0, 10))  
+        self.detail_panel.pack(side="left", fill="both", expand=True, padx=(0, 20))  
 
         self.results_panel = ctk.CTkScrollableFrame(
-            split_container,
+            self.split_container,
             fg_color="#FFF5F9",
             corner_radius=15,
             scrollbar_button_color="#FF6B9D",
@@ -1439,7 +1452,7 @@ class SearchPage(ctk.CTkFrame):
         for widget in self.detail_panel.winfo_children():
             widget.destroy()
         
-        scroll_frame = ctk.CTkScrollableFrame(self.detail_panel, fg_color="transparent")
+        scroll_frame = ctk.CTkFrame(self.detail_panel, fg_color="transparent")
         scroll_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         header = ctk.CTkFrame(scroll_frame, fg_color="transparent")
@@ -1502,93 +1515,93 @@ class SearchPage(ctk.CTkFrame):
             messagebox.showerror("Error", f"Failed to add to favorites: {str(e)}")
 
     def create_nav_buttons(self):
-        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=90, height=90)
+        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=150, height=150)
         frame_display.place(relx=0.045, rely=0.11,anchor="nw")
 
         display_image = Image.open("assets/images/display all.png")
-        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(90, 90))  
+        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(150, 150))  
         self.display_btn = ctk.CTkButton(
             frame_display, 
             image=self.display_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_user_dashboard
         )
         self.display_btn.place(x=0, y=0)
 
-        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_fav.place(relx=0.045, rely=0.35, anchor="nw")
         
         fav_img = Image.open("assets/images/star.png")
-        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(90, 90))  
+        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(150, 150))  
         self.fav_btn = ctk.CTkButton(
             frame_fav, 
             image=self.fav_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_favorites
         )
         self.fav_btn.place(x=0, y=0)
 
-        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_feedback.place(relx=0.045, rely=0.47, anchor="nw")
         
         feedback_img = Image.open("assets/images/feedback.png")
-        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(90, 90))  
+        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(150, 150))  
         self.feedback_btn = ctk.CTkButton(
             frame_feedback, 
             image=self.feedback_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_feedback
         )
         self.feedback_btn.place(x=0, y=0)
 
-        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_history.place(relx=0.043, rely=0.6, anchor="nw")
         
         history_img = Image.open("assets/images/history.png")
-        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(90, 90))  
+        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(150, 150))  
         self.history_btn = ctk.CTkButton(
             frame_history, 
             image=self.history_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_history
         )
         self.history_btn.place(x=0, y=0)
 
-        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_chatbot.place(relx=0.043, rely=0.74, anchor="nw")
         
         chatbot_img = Image.open("assets/images/bot.png")
-        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(90, 90))  
+        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(150, 150))  
         self.chatbot_btn = ctk.CTkButton(
             frame_chatbot, 
             image=self.chatbot_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_chatbot
         )
         self.chatbot_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(
             frame_main_menu, 
             text="Main Menu", 
@@ -1603,7 +1616,7 @@ class SearchPage(ctk.CTkFrame):
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(
             frame_back, 
             text="Back", 
@@ -1613,20 +1626,21 @@ class SearchPage(ctk.CTkFrame):
             corner_radius=5, 
             hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
-            command=self.open_user_dashboard
+            command=self.open_user_login
         )
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(
+        self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.close_app
         )
-        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
+        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
         for widget in self.winfo_children():
@@ -1645,7 +1659,7 @@ class SearchPage(ctk.CTkFrame):
         self.parent.show_frame(HistoryPage)
 
     def open_chatbot(self):
-        self.parent.show_frame(ChatbotPage)
+        self.parent.show_frame(ChatbotPage, medicines=self.medicines)
 
     def open_main_menu(self):
         self.parent.show_frame(WhichOneScreen)
@@ -1797,93 +1811,93 @@ class FavoritePage(ctk.CTkFrame):
             messagebox.showerror("Error", message)
 
     def create_nav_buttons(self):
-        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=90, height=90)
+        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=150, height=150)
         frame_display.place(relx=0.045, rely=0.11,anchor="nw")
 
         display_image = Image.open("assets/images/display all.png")
-        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(90, 90))  
+        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(150, 150))  
         self.display_btn = ctk.CTkButton(
             frame_display, 
             image=self.display_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_user_dashboard
         )
         self.display_btn.place(x=0, y=0)
 
-        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_search.place(relx=0.045, rely=0.23, anchor="nw")
         
         search_img = Image.open("assets/images/search.png")
-        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(90, 90))  
+        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(150, 150))  
         self.search_btn = ctk.CTkButton(
             frame_search, 
             image=self.search_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_search
         )
         self.search_btn.place(x=0, y=0)
 
-        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_feedback.place(relx=0.045, rely=0.47, anchor="nw")
         
         feedback_img = Image.open("assets/images/feedback.png")
-        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(90, 90))  
+        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(150, 150))  
         self.feedback_btn = ctk.CTkButton(
             frame_feedback, 
             image=self.feedback_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_feedback
         )
         self.feedback_btn.place(x=0, y=0)
 
-        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_history.place(relx=0.043, rely=0.6, anchor="nw")
         
         history_img = Image.open("assets/images/history.png")
-        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(90, 90))  
+        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(150, 150))  
         self.history_btn = ctk.CTkButton(
             frame_history, 
             image=self.history_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_history
         )
         self.history_btn.place(x=0, y=0)
 
-        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_chatbot.place(relx=0.043, rely=0.74, anchor="nw")
         
         chatbot_img = Image.open("assets/images/bot.png")
-        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(90, 90))  
+        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(150, 150))  
         self.chatbot_btn = ctk.CTkButton(
             frame_chatbot, 
             image=self.chatbot_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_chatbot
         )
         self.chatbot_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(
             frame_main_menu, 
             text="Main Menu", 
@@ -1898,7 +1912,7 @@ class FavoritePage(ctk.CTkFrame):
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(
             frame_back, 
             text="Back", 
@@ -1908,20 +1922,21 @@ class FavoritePage(ctk.CTkFrame):
             corner_radius=5, 
             hover=False,
             font=ctk.CTkFont(size=18, weight="bold"), 
-            command=self.open_user_dashboard
+            command=self.open_user_login
         )
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(
+        self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.close_app
         )
-        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
+        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
         for widget in self.winfo_children():
@@ -2058,83 +2073,83 @@ class HistoryPage(ctk.CTkFrame):
     #     self.controller.pages["Search"].perform_search()
 
     def create_nav_buttons(self):
-        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=90, height=90)
+        frame_display = ctk.CTkFrame(self,fg_color="#FF6B9D", width=150, height=150)
         frame_display.place(relx=0.045, rely=0.11,anchor="nw")
 
         display_image = Image.open("assets/images/display all.png")
-        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(90, 90))  
+        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(150, 150))  
         self.display_btn = ctk.CTkButton(
             frame_display, 
             image=self.display_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_user_dashboard
         )
         self.display_btn.place(x=0, y=0)
 
-        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_search.place(relx=0.045, rely=0.23, anchor="nw")
         search_img = Image.open("assets/images/search.png")
-        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(90, 90))
-        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_search)
+        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(150, 150))
+        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_search)
         self.search_btn.place(x=0, y=0)
 
-        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_fav.place(relx=0.045, rely=0.35, anchor="nw")
         
         fav_img = Image.open("assets/images/star.png")
-        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(90, 90))  
+        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(150, 150))  
         self.fav_btn = ctk.CTkButton(
             frame_fav, 
             image=self.fav_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_favorites
         )
         self.fav_btn.place(x=0, y=0)
 
-        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_feedback.place(relx=0.045, rely=0.47, anchor="nw")
         
         feedback_img = Image.open("assets/images/feedback.png")
-        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(90, 90))  
+        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(150, 150))  
         self.feedback_btn = ctk.CTkButton(
             frame_feedback, 
             image=self.feedback_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_feedback
         )
         self.feedback_btn.place(x=0, y=0)
 
-        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_chatbot.place(relx=0.043, rely=0.74, anchor="nw")
         
         chatbot_img = Image.open("assets/images/bot.png")
-        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(90, 90))  
+        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(150, 150))  
         self.chatbot_btn = ctk.CTkButton(
             frame_chatbot, 
             image=self.chatbot_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_chatbot
         )
         self.chatbot_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(
             frame_main_menu, 
             text="Main Menu", 
@@ -2149,7 +2164,7 @@ class HistoryPage(ctk.CTkFrame):
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(
             frame_back, 
             text="Back", 
@@ -2163,16 +2178,17 @@ class HistoryPage(ctk.CTkFrame):
         )
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(
+        self.exit_button = ctk.CTkButton(
             self, 
             text="Exit", 
-            width=100, 
+            width=200, 
+            height=40,
             fg_color="transparent", 
             text_color="#FFFFFF", 
             font=ctk.CTkFont(size=18, weight="bold"), 
             command=self.close_app
         )
-        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
+        self.exit_button.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
         for widget in self.winfo_children():
@@ -2497,52 +2513,52 @@ class FeedbackPage(ctk.CTkFrame):
             timestamp_label.pack(anchor="w", padx=10, pady=(0,10))
 
     def create_nav_buttons(self):
-        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_display.place(relx=0.045, rely=0.11, anchor="nw")
         display_image = Image.open("assets/images/display all.png")
-        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(90, 90))
-        self.display_btn = ctk.CTkButton(frame_display, image=self.display_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_user_dashboard)
+        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(150, 150))
+        self.display_btn = ctk.CTkButton(frame_display, image=self.display_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_user_dashboard)
         self.display_btn.place(x=0, y=0)
 
-        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_search.place(relx=0.045, rely=0.23, anchor="nw")
         search_img = Image.open("assets/images/search.png")
-        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(90, 90))
-        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_search)
+        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(150, 150))
+        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_search)
         self.search_btn.place(x=0, y=0)
 
-        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_fav.place(relx=0.045, rely=0.35, anchor="nw")
         fav_img = Image.open("assets/images/star.png")
-        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(90, 90))
-        self.fav_btn = ctk.CTkButton(frame_fav, image=self.fav_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_favorites)
+        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(150, 150))
+        self.fav_btn = ctk.CTkButton(frame_fav, image=self.fav_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_favorites)
         self.fav_btn.place(x=0, y=0)
 
-        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_history.place(relx=0.043, rely=0.6, anchor="nw")
         history_img = Image.open("assets/images/history.png")
-        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(90, 90))
-        self.history_btn = ctk.CTkButton(frame_history, image=self.history_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_history)
+        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(150, 150))
+        self.history_btn = ctk.CTkButton(frame_history, image=self.history_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_history)
         self.history_btn.place(x=0, y=0)
 
-        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_chatbot = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_chatbot.place(relx=0.043, rely=0.74, anchor="nw")
         chatbot_img = Image.open("assets/images/bot.png")
-        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(90, 90))
-        self.chatbot_btn = ctk.CTkButton(frame_chatbot, image=self.chatbot_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_chatbot)
+        self.chatbot_icon = ctk.CTkImage(light_image=chatbot_img, dark_image=chatbot_img, size=(150, 150))
+        self.chatbot_btn = ctk.CTkButton(frame_chatbot, image=self.chatbot_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_chatbot)
         self.chatbot_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_user_dashboard)
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
+        self.exit_btn = ctk.CTkButton(self, text="Exit", width=200,height=40, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
@@ -2575,11 +2591,12 @@ class FeedbackPage(ctk.CTkFrame):
         sys.exit()
 
 class ChatbotPage(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, medicines=None):
         super().__init__(parent)
         self.parent = parent
         self.configure(fg_color="transparent")
         self.username = self.get_username()
+        self.medicines = medicines if medicines is not None else load_medicines('data/Medicine_1000_noimage.csv').to_list()
         self.create_nav_buttons()
         self.create_chatbot_ui()
 
@@ -2623,19 +2640,19 @@ class ChatbotPage(ctk.CTkFrame):
             bg_color="#FF6B9D",
             border_width=2,
             corner_radius=15,
-            width=900,  
-            height=500  
+            width=1450,  
+            height=750  
         )
-        self.bot_frame.place(relx=0.53, rely=0.55, anchor="center")
+        self.bot_frame.place(relx=0.55, rely=0.54, anchor="center")
 
         self.chat_area = ctk.CTkTextbox(
             self.bot_frame,
-            width=850,
-            height=400,
+            width=1300,
+            height=650,
             state="disabled",
             fg_color="#FF6B9D",
             text_color="#FFFFFF",  
-            font=ctk.CTkFont(size=13),
+            font=ctk.CTkFont(size=18),
             wrap="word"
         )
         self.chat_area.place(relx=0.5, rely=0.45, anchor="center")
@@ -2645,7 +2662,7 @@ class ChatbotPage(ctk.CTkFrame):
             fg_color="#FFFFFF",
             height=60
         )
-        input_frame.place(relx=0.5, rely=0.9, anchor="center", relwidth=0.95)
+        input_frame.place(relx=0.5, rely=0.9, y=30, anchor="center")
 
         self.entry = ctk.CTkEntry(
             input_frame,
@@ -2656,7 +2673,7 @@ class ChatbotPage(ctk.CTkFrame):
             border_color="#FF6B9D",
             text_color="#FF6B9D"
         )
-        self.entry.pack(side="left", padx=5)
+        self.entry.pack(anchor="center", side="left", padx=5)
         self.entry.bind("<Return>", lambda event: self.send_message())
 
         self.send_btn = ctk.CTkButton(
@@ -2670,14 +2687,13 @@ class ChatbotPage(ctk.CTkFrame):
             font=ctk.CTkFont(weight="bold"),
             command=self.send_message
         )
-        self.send_btn.pack(side="left", padx=5)
+        self.send_btn.pack(anchor="center", side="right", padx=5)
 
         self.bot_greeted = False
         self.show_bot_chat()
         self.create_nav_buttons()
 
     def show_bot_chat(self):
-        self.nodes = load_medicines('data/Medicine_1000_noimage.csv').to_list()
         user_id = getattr(self.parent, "user_id", None)
         
         if not self.bot_greeted:
@@ -2706,7 +2722,7 @@ class ChatbotPage(ctk.CTkFrame):
         self.display_message(f"You: {user_input}", is_user=True)
         save_to_csv(user_id, f"You: {user_input}")
         
-        bot_response = response_bot(user_input, self.nodes)
+        bot_response = response_bot(user_input, self.medicines)
         self.display_message(f"Pharmora: {bot_response}")
         save_to_csv(user_id, f"Pharmora: {bot_response}")
         
@@ -2741,61 +2757,61 @@ class ChatbotPage(ctk.CTkFrame):
         self.chat_area.see("end")
 
     def create_nav_buttons(self):
-        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_display = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_display.place(relx=0.045, rely=0.11, anchor="nw")
         display_image = Image.open("assets/images/display all.png")
-        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(90, 90))
-        self.display_btn = ctk.CTkButton(frame_display, image=self.display_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_user_dashboard)
+        self.display_icon = ctk.CTkImage(light_image=display_image, dark_image=display_image, size=(150, 150))
+        self.display_btn = ctk.CTkButton(frame_display, image=self.display_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_user_dashboard)
         self.display_btn.place(x=0, y=0)
 
-        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_search = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_search.place(relx=0.045, rely=0.23, anchor="nw")
         search_img = Image.open("assets/images/search.png")
-        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(90, 90))
-        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_search)
+        self.search_icon = ctk.CTkImage(light_image=search_img, dark_image=search_img, size=(150, 150))
+        self.search_btn = ctk.CTkButton(frame_search, image=self.search_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_search)
         self.search_btn.place(x=0, y=0)
 
-        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_fav = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_fav.place(relx=0.045, rely=0.35, anchor="nw")
         fav_img = Image.open("assets/images/star.png")
-        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(90, 90))
-        self.fav_btn = ctk.CTkButton(frame_fav, image=self.fav_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_favorites)
+        self.fav_icon = ctk.CTkImage(light_image=fav_img, dark_image=fav_img, size=(150, 150))
+        self.fav_btn = ctk.CTkButton(frame_fav, image=self.fav_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_favorites)
         self.fav_btn.place(x=0, y=0)
 
-        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_history = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_history.place(relx=0.043, rely=0.6, anchor="nw")
         history_img = Image.open("assets/images/history.png")
-        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(90, 90))
-        self.history_btn = ctk.CTkButton(frame_history, image=self.history_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=90, height=90, command=self.open_history)
+        self.history_icon = ctk.CTkImage(light_image=history_img, dark_image=history_img, size=(150, 150))
+        self.history_btn = ctk.CTkButton(frame_history, image=self.history_icon, text="", fg_color="#FF6B9D", hover_color="#FFFFFF", width=150, height=150, command=self.open_history)
         self.history_btn.place(x=0, y=0)
 
-        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=90, height=90)
+        frame_feedback = ctk.CTkFrame(self, fg_color="#FF6B9D", width=150, height=150)
         frame_feedback.place(relx=0.045, rely=0.47, anchor="nw")
         feedback_img = Image.open("assets/images/feedback.png")
-        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(90, 90))  
+        self.feedback_icon = ctk.CTkImage(light_image=feedback_img, dark_image=feedback_img, size=(150, 150))  
         self.feedback_btn = ctk.CTkButton(
             frame_feedback, 
             image=self.feedback_icon, 
             text="", 
             fg_color="#FF6B9D", 
             hover_color="#FFFFFF", 
-            width=90, 
-            height=90,
+            width=150, 
+            height=150,
             command=self.open_feedback
         )
         self.feedback_btn.place(x=0, y=0)
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_main_menu.place(relx=0.4, rely=0.125, anchor="sw")
+        frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
         self.main_menu_btn = ctk.CTkButton(frame_main_menu, text="Main Menu", width=150, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_main_menu)
         self.main_menu_btn.pack()
 
         frame_back = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
-        frame_back.place(relx=0.25, rely=0.125, anchor="sw")
+        frame_back.place(relx=0.25, rely=0.115, anchor="sw")
         self.back_btn = ctk.CTkButton(frame_back, text="Back", width=100, fg_color="#FF6B9D", text_color="#FFFFFF", corner_radius=5, font=ctk.CTkFont(size=18, weight="bold"),hover=False, command=self.open_user_dashboard)
         self.back_btn.pack()
 
-        self.exit_btn = ctk.CTkButton(self, text="Exit", width=100, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
+        self.exit_btn = ctk.CTkButton(self, text="Exit", width=200,height=40, fg_color="transparent", text_color="#FFFFFF", font=ctk.CTkFont(size=18, weight="bold"), command=self.close_app)
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se")
 
     def clear_frame(self):
