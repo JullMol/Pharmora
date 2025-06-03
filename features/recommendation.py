@@ -2,7 +2,7 @@ from loader import load_medicines
 from models.search import binary_search
 from difflib import get_close_matches
 
-CSV_PATH = 'data/Medicine_Details.csv'
+CSV_PATH = 'data/Medicine_1000_noimage.csv'
 
 def find_similar_by_name(drug_name, all_names, all_nodes):
     matches = get_close_matches(drug_name, all_names, n=3, cutoff=0.6)

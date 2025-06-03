@@ -1,7 +1,7 @@
 import csv
 from models.linked_list import DoubleLinkedList
 
-MEDICINE_FILE = 'data/Medicine_Details.csv'
+MEDICINE_FILE = 'data/Medicine_1000_noimage.csv'
 
 def sort_medicines_by_column(column_name, reverse=False):
     try:
