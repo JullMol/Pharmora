@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 FAVORITES_FILE = 'data/user_favorites.csv'
-MEDICINE_FILE = 'data/Medicine_Details.csv'
+MEDICINE_FILE = 'data/Medicine_1000_noimage.csv'
 
 def add_to_favorites(user_id, medicine_name: str):
     medicine_name = medicine_name.strip().lower()

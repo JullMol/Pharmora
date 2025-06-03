@@ -1150,7 +1150,7 @@ class UserDashboard(ctk.CTkFrame):
             height=150,
             command=self.open_chatbot
         )
-        self.chatbot_btn.place(x=0, y=0)
+        self.chatbot_btn.place(x=0, y=0)            
 
         frame_main_menu = ctk.CTkFrame(self, fg_color="#FF6B9D", corner_radius=5)
         frame_main_menu.place(relx=0.425, rely=0.115, anchor="sw")
